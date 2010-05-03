@@ -56,7 +56,12 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 	private IWorkbenchPart part;
 	/** the xsl */
 	private XslFile xslFile;
+	/** transformer */
+	private HtmlTransformer transformer;
 
+	public AbstractHtmlCreateAction() {
+		transformer = new HtmlTransformer(createXslFile());
+	}
 	/**
 	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction,
 	 *      org.eclipse.ui.IWorkbenchPart)
@@ -138,11 +143,6 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 			}
 			ResultFile result = new ResultFile(source
 					.getReplaceExtensionFile("html"));
-//			if (xslFile == null) {
-//				xslFile = createXslFile();
-//			}
-			xslFile = createXslFile();
-			HtmlTransformer transformer = new HtmlTransformer(xslFile);
 
 			transformer.transform(source, result);
 

@@ -39,7 +39,7 @@ import jp.sourceforge.edocbook.model.XslFile;
 public class HtmlTransformer {
 	/** the xsl */
 	private XslFile xsl;
-
+	private Transformer transformer;
 	/**
 	 * Constructor
 	 * 
@@ -48,6 +48,7 @@ public class HtmlTransformer {
 	 */
 	public HtmlTransformer(XslFile xsl) {
 		this.xsl = xsl;
+		this.transformer = createTransformer();		
 	}
 
 	/**
@@ -60,10 +61,12 @@ public class HtmlTransformer {
 	 */
 	public void transform(DocbookFile source, ResultFile result) {
 		try {
-			Transformer transformer = createTransformer();
 			System.out.println(source.toString());
 			System.out.println(result.toString());
 			assert transformer != null;
+
+			transformer.setOutputProperties(xsl.getOutputProperties());
+			setupParameter(transformer);
 
 			transformer.transform(source.getSource(), result.getResult());
 		} catch (TransformerException e) {
@@ -72,7 +75,7 @@ public class HtmlTransformer {
 		}
 	}
 
-	private void configureParameter(Transformer transformer) {
+	private void setupParameter(Transformer transformer) {
 		for (Map.Entry<String, Object> entry : xsl.getParameters().entrySet()) {
 			transformer.setParameter(entry.getKey(), entry.getValue());
 		}
@@ -134,14 +137,11 @@ public class HtmlTransformer {
 		try {
 			Transformer transformer = tf.newTransformer(xsl.getSource());
 			assert transformer != null;
-			transformer.setOutputProperties(xsl.getOutputProperties());
-			configureParameter(transformer);
 
 			return transformer;
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
 			throw new EDocbookRuntimeException(e);
 		}
-
 	}
 }
