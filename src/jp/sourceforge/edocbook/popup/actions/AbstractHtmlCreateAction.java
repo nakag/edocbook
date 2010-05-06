@@ -18,7 +18,6 @@
  */
 package jp.sourceforge.edocbook.popup.actions;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -62,6 +61,7 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 	public AbstractHtmlCreateAction() {
 		transformer = new HtmlTransformer(createXslFile());
 	}
+
 	/**
 	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction,
 	 *      org.eclipse.ui.IWorkbenchPart)
@@ -95,7 +95,8 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 
 			return (IFile) resource;
 		} else if (part instanceof IEditorPart) {
-			Object obj = ((IEditorPart)part).getEditorInput().getAdapter(IFile.class);
+			Object obj = ((IEditorPart) part).getEditorInput().getAdapter(
+					IFile.class);
 			if (obj == null) {
 				System.out.println("obj is null.");
 				return null;
@@ -115,9 +116,7 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 	protected DocbookFile getSourceFile() {
 		IFile iFile = getSelection();
 		if (iFile != null) {
-			File file = new File(iFile.getLocation().toString());
-
-			return new DocbookFile(file);
+			return new DocbookFile(iFile.getLocation().toString());
 		}
 		return null;
 	}

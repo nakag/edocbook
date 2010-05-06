@@ -19,9 +19,6 @@
 package jp.sourceforge.edocbook.model;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -33,17 +30,17 @@ import javax.xml.transform.stream.StreamSource;
  * 
  */
 public class DocbookFile {
-	/** docbook file */
-	private File sourceFile;
+	/** systemid(docbook file path) */
+	private String systemId;
 
 	/**
 	 * The constructor
 	 * 
-	 * @param file
-	 *            docbook file
+	 * @param systemId
+	 *            docbook file path
 	 */
-	public DocbookFile(File file) {
-		this.sourceFile = file;
+	public DocbookFile(String systemId) {
+		this.systemId = systemId;
 	}
 
 	/**
@@ -52,25 +49,7 @@ public class DocbookFile {
 	 * @return Source
 	 */
 	public Source getSource() {
-		return new StreamSource(getInputStream());
-	}
-
-	/**
-	 * get InputStream from sourceFile
-	 * 
-	 * @return inputStream or null
-	 */
-	private InputStream getInputStream() {
-		try {
-			return sourceFile.toURI().toURL().openStream();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return new StreamSource(systemId);
 	}
 
 	/**
@@ -81,9 +60,8 @@ public class DocbookFile {
 	 * @return the file named fileName + extension
 	 */
 	public File getReplaceExtensionFile(String ext) {
-		int idx = sourceFile.getAbsolutePath().lastIndexOf(".");
-		String newPath = sourceFile.getAbsolutePath().substring(0, idx) + "."
-				+ ext;
+		int idx = systemId.lastIndexOf(".");
+		String newPath = systemId.substring(0, idx) + "." + ext;
 		return new File(newPath);
 	}
 
@@ -93,7 +71,6 @@ public class DocbookFile {
 	 */
 	@Override
 	public String toString() {
-		return super.toString() + "," + sourceFile.getAbsolutePath();
+		return super.toString() + "," + systemId;
 	}
-
 }
