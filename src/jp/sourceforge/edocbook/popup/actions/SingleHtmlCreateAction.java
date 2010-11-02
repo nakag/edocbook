@@ -28,7 +28,7 @@
 package jp.sourceforge.edocbook.popup.actions;
 
 import jp.sourceforge.edocbook.Activator;
-import jp.sourceforge.edocbook.model.XslFile;
+import jp.sourceforge.edocbook.model.DocbookXsl;
 
 /**
  * SingleHtmlCreateAction
@@ -49,9 +49,15 @@ public class SingleHtmlCreateAction extends AbstractHtmlCreateAction {
 	 * @see jp.sourceforge.edocbook.popup.actions.AbstractHtmlCreateAction#createXslFile()
 	 */
 	@Override
-	protected XslFile createXslFile() {
-		return new XslFile(Activator
-				.getResourceAsUrlString("lib/docbook-xsl/html/docbook.xsl"),
+	protected DocbookXsl createXslFile() {
+		DocbookXsl xsl = new DocbookXsl(Activator
+				.getResourceAsUrlString("lib/docbook-xsl"),
 				createOutputProperties(), createParameters());
+		xsl.setResultFileExtension("html");
+		xsl.addImport("html/docbook.xsl");
+//		xsl.addTemplate("user.footer.content",
+//"<div style=\"border: 1px solid #9cf; padding: .5em;\">\n<div><a href=\"http://sourceforge.jp/\"><img width=\"210\" height=\"63\" border=\"0\" alt=\"SourceForge.JP\"><xsl:attribute name=\"src\">http://sourceforge.jp/sflogo.php?group_id=4743<![CDATA[&]]>type=3</xsl:attribute></img></a></div></div>"
+//);
+		return xsl;
 	}
 }

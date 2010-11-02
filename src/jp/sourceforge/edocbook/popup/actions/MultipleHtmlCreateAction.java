@@ -28,7 +28,7 @@
 package jp.sourceforge.edocbook.popup.actions;
 
 import jp.sourceforge.edocbook.Activator;
-import jp.sourceforge.edocbook.model.XslFile;
+import jp.sourceforge.edocbook.model.DocbookXsl;
 
 /**
  * MultipleHtmlCreateAction
@@ -49,9 +49,12 @@ public class MultipleHtmlCreateAction extends AbstractHtmlCreateAction {
 	 * @see jp.sourceforge.edocbook.popup.actions.AbstractHtmlCreateAction#createXslFile()
 	 */
 	@Override
-	protected XslFile createXslFile() {
-		return new XslFile(Activator.getResourceAsUrlString(
-				"lib/docbook-xsl/html/chunk.xsl"), createOutputProperties(),
+	protected DocbookXsl createXslFile() {
+		DocbookXsl xsl = new DocbookXsl(Activator.getResourceAsUrlString(
+				"lib/docbook-xsl"), createOutputProperties(),
 				createParameters());
+		xsl.setResultFileExtension("html");
+		xsl.addImport("html/chunk.xsl");
+		return xsl;
 	}
 }

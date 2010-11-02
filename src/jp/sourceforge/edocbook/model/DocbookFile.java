@@ -27,15 +27,13 @@
  */
 package jp.sourceforge.edocbook.model;
 
-import java.io.File;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 /**
  * DocbookFile
  * 
- * @author nakG
+ * @author nakaG
  * 
  */
 public class DocbookFile {
@@ -60,18 +58,12 @@ public class DocbookFile {
 	public Source getSource() {
 		return new StreamSource(systemId);
 	}
-
+	
 	/**
-	 * get file replaced extension
-	 * 
-	 * @param ext
-	 *            extension to replace
-	 * @return the file named fileName + extension
+	 * @return the systemId
 	 */
-	public File getReplaceExtensionFile(String ext) {
-		int idx = systemId.lastIndexOf(".");
-		String newPath = systemId.substring(0, idx) + "." + ext;
-		return new File(newPath);
+	public String getSystemId() {
+		return systemId;
 	}
 
 	/**

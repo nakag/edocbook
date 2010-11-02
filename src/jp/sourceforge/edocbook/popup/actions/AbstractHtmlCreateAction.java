@@ -36,9 +36,7 @@ import javax.xml.transform.OutputKeys;
 import jp.sourceforge.edocbook.Activator;
 import jp.sourceforge.edocbook.EDocbookRuntimeException;
 import jp.sourceforge.edocbook.model.DocbookFile;
-import jp.sourceforge.edocbook.model.ResultFile;
-import jp.sourceforge.edocbook.model.XslFile;
-import jp.sourceforge.edocbook.transform.HtmlTransformer;
+import jp.sourceforge.edocbook.model.DocbookXsl;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -62,13 +60,14 @@ import org.eclipse.ui.IWorkbenchPart;
 public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate {
 	/** IWorkbenchPart */
 	private IWorkbenchPart part;
+
 	/** the xsl */
-	private XslFile xslFile;
+	// private DocbookXsl xslFile;
 	/** transformer */
-	private HtmlTransformer transformer;
+	// private DocbookTransformer transformer;
 
 	public AbstractHtmlCreateAction() {
-		transformer = new HtmlTransformer(createXslFile());
+		// transformer = new DocbookTransformer(createXslFile());
 	}
 
 	/**
@@ -135,7 +134,7 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(
 					IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			Activator.showErrorDialog(e);
 			throw new EDocbookRuntimeException(e);
 		}
 	}
@@ -149,18 +148,16 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 			if (source == null) {
 				return;
 			}
-			ResultFile result = new ResultFile(source
-					.getReplaceExtensionFile("html"));
-
-			transformer.transform(source, result);
-
+//			ResultFile result = 
+			createXslFile().apply(source);
 			reflesh();
+			Activator.showMessageDialog("Output completed.");
 		} catch (EDocbookRuntimeException e) {
 			Activator.showErrorDialog(e);
 		}
 	}
 
-	protected abstract XslFile createXslFile();
+	protected abstract DocbookXsl createXslFile();
 
 	protected Properties createOutputProperties() {
 		// TODO get output property from anywhere(preference?)
@@ -175,8 +172,8 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 		return prop;
 	}
 
-	protected Map<String, Object> createParameters() {
-		Map<String, Object> params = new HashMap<String, Object>();
+	protected Map<String, String> createParameters() {
+		Map<String, String> params = new HashMap<String, String>();
 		params.put("use.extensions", "1");
 		return params;
 	}

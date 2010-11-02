@@ -27,58 +27,39 @@
  */
 package jp.sourceforge.edocbook.model;
 
-import java.util.Map;
-import java.util.Properties;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
 /**
- * XslFile
+ * XSL String Builder.
  * 
  * @author nakaG
  * 
  */
-public class XslFile {
-	/** xsl:output properties */
-	private Properties outputProperties;
-	/** xsl:param parameter */
-	private Map<String, Object> parameters;
-	/** doctype systemid */
-	private String systemId;
-	
-	/**
-	 * The constructor
-	 * 
-	 * @param xslURL
-	 */
-	public XslFile(String systemId, Properties outputProperties, Map<String, Object> parameters) {
-		this.systemId = systemId;
-		this.outputProperties = outputProperties;
-		this.parameters = parameters;
+public class XslBuilder {
+	private StringBuilder builder = new StringBuilder();
+
+	public XslBuilder() {
+		reset();
 	}
 
-	/**
-	 * get Source
-	 * 
-	 * @return the Source of xsl
-	 */
-	public Source getSource() {
-		return new StreamSource(systemId);
+	public void reset() {
+		builder.delete(0, builder.length());
+		builder
+				.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" version=\"1.0\" exclude-result-prefixes=\"exsl\">");
 	}
 
-	/**
-	 * @return the outputProperties
-	 */
-	public Properties getOutputProperties() {
-		return outputProperties;
+	public void addImport(String href) {
+		builder.append("<xsl:import href=\"" + escape(href) + "\"/>");
 	}
 
-	/**
-	 * @return the parameters
-	 */
-	public Map<String, Object> getParameters() {
-		return parameters;
-	}	
-	
+	public void addTemplate(String name, String body) {
+		builder.append("<xsl:template name=\"" + name + "\">");
+		builder.append(escape(body));
+		builder.append("</xsl:template> ");
+	}
+
+	public String getXslString() {
+		return builder.toString() + "</xsl:stylesheet>";
+	}
+	private String escape(String source) {
+		return source.replace("\"", "\\\"");
+	}
 }
