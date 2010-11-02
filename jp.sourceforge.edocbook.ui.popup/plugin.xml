@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="jp.sourceforge.edocbook.ui.popup.objectContribution1"
+            nameFilter="*.xml"
+            objectClass="org.eclipse.core.resources.IResource">
+         <menu
+               id="jp.sourceforge.edocbook.ui.popup.menu1"
+               label="Docbook"
+               path="additions">
+            <separator
+                  name="jp.sourceforge.edocbook.ui.popup.actions.html">
+            </separator>
+         </menu>
+         <action
+               class="jp.sourceforge.edocbook.ui.popup.actions.SingleHtmlCreateAction"
+               enablesFor="1"
+               id="jp.sourceforge.edocbook.ui.popup.action..html.single"
+               label="Docbook -&gt; HTML(single)"
+               menubarPath="jp.sourceforge.edocbook.ui.popup.menu1/jp.sourceforge.edocbook.ui.popup.actions.html">
+         </action>
+         <action
+               class="jp.sourceforge.edocbook.ui.popup.actions.MultipleHtmlCreateAction"
+               enablesFor="1"
+               id="jp.sourceforge.edocbook.ui.popup.action.html.multiple"
+               label="Docbook -&gt; HTML(multiple)"
+               menubarPath="jp.sourceforge.edocbook.ui.popup.menu1/jp.sourceforge.edocbook.ui.popup.actions.html">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
