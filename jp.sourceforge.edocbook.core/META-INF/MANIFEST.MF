@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclipse Docbook Plugin Core
+Bundle-SymbolicName: jp.sourceforge.edocbook.core
+Bundle-Version: 0.0.3.qualifier
+Bundle-Activator: jp.sourceforge.edocbook.core.Activator
+Require-Bundle: org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/serializer.jar,
+ lib/xalan.jar,
+ lib/xalan27.jar,
+ lib/xercesImpl.jar,
+ lib/xml-apis.jar,
+ .
+Export-Package: jp.sourceforge.edocbook.core
