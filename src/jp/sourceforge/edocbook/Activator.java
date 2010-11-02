@@ -157,6 +157,7 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static String getResourceAsUrlString(String resourceName) {
 		URL url = getDefault().getBundle().getEntry(resourceName);
+
 		try {
 			url = FileLocator.resolve(url);
 		} catch (IOException e) {

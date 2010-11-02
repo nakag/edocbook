@@ -80,7 +80,7 @@ public class DocbookXsl {
 			builder.addTemplate(entry.getKey(), entry.getValue());
 		}
 		return new StreamSource(new ByteArrayInputStream(builder.getXslString()
-				.getBytes()), rootDir + "/virtual.xsl");
+				.getBytes()), rootDir);// + "/virtual.xsl");
 	}
 
 	public void addImport(String importXsl) {
