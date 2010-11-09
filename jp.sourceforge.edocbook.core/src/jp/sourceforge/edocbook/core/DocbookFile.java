@@ -58,7 +58,7 @@ public class DocbookFile {
 	public Source getSource() {
 		return new StreamSource(systemId);
 	}
-	
+
 	/**
 	 * @return the systemId
 	 */
@@ -67,6 +67,7 @@ public class DocbookFile {
 	}
 
 	/**
+	 * {inheritDoc}
 	 * 
 	 * @see java.lang.Object#toString()
 	 */

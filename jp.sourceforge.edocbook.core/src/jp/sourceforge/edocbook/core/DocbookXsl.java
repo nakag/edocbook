@@ -48,10 +48,13 @@ public class DocbookXsl {
 	private Properties outputProperties;
 	/** xsl:param parameter */
 	private Map<String, String> parameters;
-	/** doctype systemid */
+	/** the the path of root directory of docbook-xsl */
 	private String rootDir;
+	/** the list of adding xsl:import */
 	private List<String> importXslList = new ArrayList<String>();
+	/** the list of overriding xsl:template */
 	private Map<String, String> templateList = new HashMap<String, String>();
+	/** the result file extension */
 	private String resultFileExtension;
 
 	/**
@@ -64,8 +67,12 @@ public class DocbookXsl {
 	/**
 	 * The constructor
 	 * 
-	 * @param rootDir the path of root directory of docbook-xsl
-	 * @param outputProperties the attributes of &lt;xsl:output&gt;
+	 * @param rootDir
+	 *            the path of root directory of docbook-xsl
+	 * @param outputProperties
+	 *            the attributes of &lt;xsl:output&gt;
+	 * @param parameters
+	 *            the parameteres of &lt;xsl:param&gt;
 	 */
 	public DocbookXsl(String rootDir, Properties outputProperties,
 			Map<String, String> parameters) {
@@ -91,10 +98,23 @@ public class DocbookXsl {
 				.getBytes()), rootDir);// + "/virtual.xsl");
 	}
 
-	public void addImport(String importXsl) {
-		importXslList.add(importXsl);
+	/**
+	 * add href attribute of xsl:import
+	 * 
+	 * @param href
+	 *            the attribute of xsl:import
+	 */
+	public void addImport(String href) {
+		importXslList.add(href);
 	}
 
+	/**
+	 * 
+	 * @param name
+	 *            the name of Overriding xsl:template
+	 * @param body
+	 *            the body of xsl:template
+	 */
 	public void addTemplate(String name, String body) {
 		templateList.put(name, body);
 	}
@@ -113,6 +133,13 @@ public class DocbookXsl {
 		return parameters;
 	}
 
+	/**
+	 * apply xsl stylesheet to the docbook
+	 * 
+	 * @param docbook
+	 *            the docbook
+	 * @return result file
+	 */
 	public ResultFile apply(DocbookFile docbook) {
 		DocbookTransformer transformer = new DocbookTransformer(getSource());
 		for (Map.Entry<Object, Object> entry : outputProperties.entrySet()) {
@@ -142,14 +169,16 @@ public class DocbookXsl {
 	}
 
 	/**
-	 * @param outputProperties the outputProperties to set
+	 * @param outputProperties
+	 *            the outputProperties to set
 	 */
 	public void setOutputProperties(Properties outputProperties) {
 		this.outputProperties = outputProperties;
 	}
 
 	/**
-	 * @param parameters the parameters to set
+	 * @param parameters
+	 *            the parameters to set
 	 */
 	public void setParameters(Map<String, String> parameters) {
 		this.parameters = parameters;

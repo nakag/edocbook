@@ -34,31 +34,64 @@ package jp.sourceforge.edocbook.core;
  * 
  */
 public class XslBuilder {
+	/** xsl string builder */
 	private StringBuilder builder = new StringBuilder();
 
+	/**
+	 * the constructor
+	 */
 	public XslBuilder() {
 		reset();
 	}
 
+	/**
+	 * reset xsl string
+	 */
 	public void reset() {
 		builder.delete(0, builder.length());
 		builder
 				.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" version=\"1.0\" exclude-result-prefixes=\"exsl\">");
 	}
 
+	/**
+	 * add href attribute of xsl:import
+	 * 
+	 * @param href
+	 *            the attribute of xsl:import
+	 */
 	public void addImport(String href) {
 		builder.append("<xsl:import href=\"" + escape(href) + "\"/>");
 	}
 
+	/**
+	 * 
+	 * @param name
+	 *            the name of Overriding xsl:template
+	 * @param body
+	 *            the body of xsl:template
+	 */
 	public void addTemplate(String name, String body) {
 		builder.append("<xsl:template name=\"" + name + "\">");
 		builder.append(escape(body));
 		builder.append("</xsl:template> ");
 	}
 
+	/**
+	 * get xsl string
+	 * 
+	 * @return the xsl string
+	 */
 	public String getXslString() {
 		return builder.toString() + "</xsl:stylesheet>";
 	}
+
+	/**
+	 * escape string
+	 * 
+	 * @param source
+	 *            the string
+	 * @return escaped value
+	 */
 	private String escape(String source) {
 		return source.replace("\"", "\\\"");
 	}

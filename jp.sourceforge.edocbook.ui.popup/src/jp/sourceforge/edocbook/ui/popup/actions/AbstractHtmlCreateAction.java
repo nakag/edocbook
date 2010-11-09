@@ -33,10 +33,10 @@ import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
 
-import jp.sourceforge.edocbook.ui.popup.Activator;
-import jp.sourceforge.edocbook.core.EDocbookRuntimeException;
 import jp.sourceforge.edocbook.core.DocbookFile;
 import jp.sourceforge.edocbook.core.DocbookXsl;
+import jp.sourceforge.edocbook.core.EDocbookRuntimeException;
+import jp.sourceforge.edocbook.ui.popup.Activator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -61,16 +61,16 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 	/** IWorkbenchPart */
 	private IWorkbenchPart part;
 
-	/** the xsl */
-	// private DocbookXsl xslFile;
-	/** transformer */
-	// private DocbookTransformer transformer;
-
+	/**
+	 * the constructor
+	 */
 	public AbstractHtmlCreateAction() {
 		// transformer = new DocbookTransformer(createXslFile());
 	}
 
 	/**
+	 * {inheritDoc}
+	 * 
 	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction,
 	 *      org.eclipse.ui.IWorkbenchPart)
 	 */
@@ -116,8 +116,11 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 	}
 
 	/**
+	 * {inheritDoc}
+	 * 
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 
@@ -140,15 +143,18 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 	}
 
 	/**
+	 * {inheritDoc}
+	 * 
 	 * @see IActionDelegate#run(IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		try {
 			DocbookFile source = getSourceFile();
 			if (source == null) {
 				return;
 			}
-//			ResultFile result = 
+			// ResultFile result =
 			createXslFile().apply(source);
 			reflesh();
 			Activator.showMessageDialog("Output completed.");

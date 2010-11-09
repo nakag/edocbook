@@ -45,6 +45,8 @@ public class MultipleHtmlCreateAction extends AbstractHtmlCreateAction {
 	}
 
 	/**
+	 * {inheritDoc}
+	 * 
 	 * @see jp.sourceforge.edocbook.ui.popup.actions.AbstractHtmlCreateAction#createXslFile()
 	 */
 	@Override

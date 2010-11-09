@@ -42,11 +42,14 @@ import javax.xml.transform.TransformerFactory;
  * 
  */
 public class DocbookTransformer {
+	/** the transformer */
 	private Transformer transformer;
 
 	/**
-	 * Constructor
+	 * the constructor
 	 * 
+	 * @param xsl
+	 *            the source of xsl
 	 */
 	public DocbookTransformer(Source xsl) {
 		transformer = createTransformer(xsl);
@@ -57,8 +60,9 @@ public class DocbookTransformer {
 	 * 
 	 * @param source
 	 *            the docbook file
-	 * @param result
-	 *            the result file
+	 * @param extension
+	 *            the extension of result file
+	 * @return the result file
 	 */
 	public ResultFile transform(DocbookFile source, String extension) {
 		try {
@@ -74,10 +78,26 @@ public class DocbookTransformer {
 		}
 	}
 
+	/**
+	 * set the attribute of &lt;xsl:output&gt;
+	 * 
+	 * @param key
+	 *            the name of attribute
+	 * @param value
+	 *            the value of attribute
+	 */
 	public void setOutputProperty(String key, String value) {
 		transformer.setOutputProperty(key, value);
 	}
 
+	/**
+	 * set the parameter of &lt;xsl:param&gt;
+	 * 
+	 * @param param
+	 *            the name of parameter
+	 * @param value
+	 *            the value of parameter
+	 */
 	public void setParameter(String param, String value) {
 		transformer.setParameter(param, value);
 	}
@@ -85,6 +105,8 @@ public class DocbookTransformer {
 	/**
 	 * get file replaced extension
 	 * 
+	 * @param source
+	 *            the DocbookFile
 	 * @param ext
 	 *            extension to replace
 	 * @return the file named fileName + extension
