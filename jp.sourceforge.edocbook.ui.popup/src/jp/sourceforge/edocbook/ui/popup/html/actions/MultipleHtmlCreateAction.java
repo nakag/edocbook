@@ -25,29 +25,29 @@
  * {Corresponding Source for a non-source form of such a combination shall 
  * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
-package jp.sourceforge.edocbook.ui.popup.actions;
+package jp.sourceforge.edocbook.ui.popup.html.actions;
 
 import jp.sourceforge.edocbook.core.DocbookXsl;
 
 /**
- * SingleHtmlCreateAction
+ * MultipleHtmlCreateAction
  * 
  * @author nakaG
  * 
  */
-public class SingleHtmlCreateAction extends AbstractHtmlCreateAction {
+public class MultipleHtmlCreateAction extends AbstractHtmlCreateAction {
 
 	/**
-	 * Constructor for SingleHtmlCreateAction.
+	 * Constructor for MultipleHtmlCreateAction.
 	 */
-	public SingleHtmlCreateAction() {
+	public MultipleHtmlCreateAction() {
 		super();
 	}
 
 	/**
 	 * {inheritDoc}
 	 * 
-	 * @see jp.sourceforge.edocbook.ui.popup.actions.AbstractHtmlCreateAction#createXslFile()
+	 * @see jp.sourceforge.edocbook.ui.popup.html.actions.AbstractHtmlCreateAction#createXslFile()
 	 */
 	@Override
 	protected DocbookXsl createXslFile() {
@@ -55,10 +55,7 @@ public class SingleHtmlCreateAction extends AbstractHtmlCreateAction {
 		xsl.setOutputProperties(createOutputProperties());
 		xsl.setParameters(createParameters());
 		xsl.setResultFileExtension("html");
-		xsl.addImport("html/docbook.xsl");
-		// xsl.addTemplate("user.footer.content",
-		// "<div style=\"border: 1px solid #9cf; padding: .5em;\">\n<div><a href=\"http://sourceforge.jp/\"><img width=\"210\" height=\"63\" border=\"0\" alt=\"SourceForge.JP\"><xsl:attribute name=\"src\">http://sourceforge.jp/sflogo.php?group_id=4743<![CDATA[&]]>type=3</xsl:attribute></img></a></div></div>"
-		// );
+		xsl.addImport("html/chunk.xsl");
 		return xsl;
 	}
 }

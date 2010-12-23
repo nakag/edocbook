@@ -25,9 +25,10 @@
  * {Corresponding Source for a non-source form of such a combination shall 
  * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
-package jp.sourceforge.edocbook.ui.popup.actions;
+package jp.sourceforge.edocbook.ui.popup.html.actions;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -36,20 +37,12 @@ import javax.xml.transform.OutputKeys;
 import jp.sourceforge.edocbook.core.DocbookFile;
 import jp.sourceforge.edocbook.core.DocbookXsl;
 import jp.sourceforge.edocbook.core.EDocbookRuntimeException;
+import jp.sourceforge.edocbook.core.Param;
 import jp.sourceforge.edocbook.ui.popup.Activator;
+import jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IActionDelegate;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * AbstractHtmlCreateAction
@@ -57,89 +50,15 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author nakaG
  * 
  */
-public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate {
-	/** IWorkbenchPart */
-	private IWorkbenchPart part;
+public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
+	public static final String PARAM_KEYS = "jp.sourceforge.edocbook.ui.popup.html.param_keys";
+	public static final String TEMPLATE_KEYS = "jp.sourceforge.edocbook.ui.popup.html.template_keys";
 
 	/**
 	 * the constructor
 	 */
 	public AbstractHtmlCreateAction() {
 		// transformer = new DocbookTransformer(createXslFile());
-	}
-
-	/**
-	 * {inheritDoc}
-	 * 
-	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction,
-	 *      org.eclipse.ui.IWorkbenchPart)
-	 */
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		part = targetPart;
-	}
-
-	/**
-	 * get theselect file
-	 * 
-	 * @return IFile
-	 */
-	private IFile getSelection() {
-		ISelectionProvider selectionProvider = part.getSite()
-				.getSelectionProvider();
-		ISelection selection = selectionProvider.getSelection();
-		if (selection instanceof StructuredSelection) {
-			StructuredSelection structuredSelection = (StructuredSelection) selectionProvider
-					.getSelection();
-			if (!(structuredSelection.getFirstElement() instanceof IResource)) {
-				return null;
-			}
-
-			IResource resource = (IResource) structuredSelection
-					.getFirstElement();
-			if (resource == null || resource.getType() != IResource.FILE) {
-				return null;
-			}
-
-			return (IFile) resource;
-		} else if (part instanceof IEditorPart) {
-			Object obj = ((IEditorPart) part).getEditorInput().getAdapter(
-					IFile.class);
-			if (obj == null) {
-				System.out.println("obj is null.");
-				return null;
-			}
-			return (IFile) obj;
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * {inheritDoc}
-	 * 
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-	}
-
-	protected DocbookFile getSourceFile() {
-		IFile iFile = getSelection();
-		if (iFile != null) {
-			return new DocbookFile(iFile.getLocation().toString());
-		}
-		return null;
-	}
-
-	protected void reflesh() {
-		try {
-			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(
-					IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			Activator.showErrorDialog(e);
-			throw new EDocbookRuntimeException(e);
-		}
 	}
 
 	/**
@@ -163,8 +82,10 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 		}
 	}
 
+	@Override
 	protected abstract DocbookXsl createXslFile();
 
+	@Override
 	protected Properties createOutputProperties() {
 		// TODO get output property from anywhere(preference?)
 		Properties prop = new Properties();
@@ -178,9 +99,24 @@ public abstract class AbstractHtmlCreateAction implements IObjectActionDelegate 
 		return prop;
 	}
 
-	protected Map<String, String> createParameters() {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("use.extensions", "1");
-		return params;
+	@Override
+	protected List<Param> createParameters() {
+		Activator.getDefault();
+		Map<String, String> params = Activator.setupPreference(PARAM_KEYS);
+		List<Param> parameters = new ArrayList<Param>();
+		for (Map.Entry<String, String> entry : params.entrySet()) {
+			parameters.add(new Param(entry.getKey(), entry.getValue()));
+		}
+		return parameters;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction#createTemlates()
+	 */
+	@Override
+	protected Map<String, String> createTemlates() {
+		return Activator.getDefault().setupPreference(TEMPLATE_KEYS);
 	}
 }

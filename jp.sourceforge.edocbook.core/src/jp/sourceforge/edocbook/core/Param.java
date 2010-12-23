@@ -25,37 +25,44 @@
  * {Corresponding Source for a non-source form of such a combination shall 
  * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
-package jp.sourceforge.edocbook.ui.popup.actions;
-
-import jp.sourceforge.edocbook.core.DocbookXsl;
+package jp.sourceforge.edocbook.core;
 
 /**
- * MultipleHtmlCreateAction
+ * object of xsl:param
  * 
  * @author nakaG
  * 
  */
-public class MultipleHtmlCreateAction extends AbstractHtmlCreateAction {
+public class Param {
+	/** name attribute of xsl:param */
+	private String name;
+	/** select attribute of xsl:param */
+	private String value;
 
 	/**
-	 * Constructor for MultipleHtmlCreateAction.
+	 * the constructor
+	 * 
+	 * @param name
+	 *            name attribute of xsl:param
+	 * @param value
+	 *            select attribute of xsl:param
 	 */
-	public MultipleHtmlCreateAction() {
-		super();
+	public Param(String name, String value) {
+		this.name = name;
+		this.value = value;
 	}
 
 	/**
-	 * {inheritDoc}
-	 * 
-	 * @see jp.sourceforge.edocbook.ui.popup.actions.AbstractHtmlCreateAction#createXslFile()
+	 * @return the name
 	 */
-	@Override
-	protected DocbookXsl createXslFile() {
-		DocbookXsl xsl = new DocbookXsl();
-		xsl.setOutputProperties(createOutputProperties());
-		xsl.setParameters(createParameters());
-		xsl.setResultFileExtension("html");
-		xsl.addImport("html/chunk.xsl");
-		return xsl;
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+		return value;
 	}
 }

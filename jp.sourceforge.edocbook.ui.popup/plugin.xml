@@ -17,20 +17,28 @@
             </separator>
          </menu>
          <action
-               class="jp.sourceforge.edocbook.ui.popup.actions.SingleHtmlCreateAction"
+               class="jp.sourceforge.edocbook.ui.popup.html.actions.SingleHtmlCreateAction"
                enablesFor="1"
                id="jp.sourceforge.edocbook.ui.popup.action..html.single"
                label="Docbook -&gt; HTML(single)"
                menubarPath="jp.sourceforge.edocbook.ui.popup.menu1/jp.sourceforge.edocbook.ui.popup.actions.html">
          </action>
          <action
-               class="jp.sourceforge.edocbook.ui.popup.actions.MultipleHtmlCreateAction"
+               class="jp.sourceforge.edocbook.ui.popup.html.actions.MultipleHtmlCreateAction"
                enablesFor="1"
                id="jp.sourceforge.edocbook.ui.popup.action.html.multiple"
                label="Docbook -&gt; HTML(multiple)"
                menubarPath="jp.sourceforge.edocbook.ui.popup.menu1/jp.sourceforge.edocbook.ui.popup.actions.html">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="jp.sourceforge.edocbook.ui.preferences.WorkbenchPreferencePage1"
+            id="jp.sourceforge.edocbook.ui.popup.page1"
+            name="Docbook">
+      </page>
    </extension>
 
 </plugin>

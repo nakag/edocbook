@@ -27,10 +27,17 @@
  */
 package jp.sourceforge.edocbook.ui.popup;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import jp.sourceforge.edocbook.core.Param;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
@@ -87,17 +94,17 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path
-	 * 
-	 * @param path
-	 *            the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
+//	/**
+//	 * Returns an image descriptor for the image file at the given plug-in
+//	 * relative path
+//	 * 
+//	 * @param path
+//	 *            the path
+//	 * @return the image descriptor
+//	 */
+//	public static ImageDescriptor getImageDescriptor(String path) {
+//		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+//	}
 
 	/**
 	 * Error Dialog
@@ -143,5 +150,32 @@ public class Activator extends AbstractUIPlugin {
 		getDefault().getLog().log(status);
 		t.printStackTrace();
 	}
+	public static Map<String, String> setupPreference(String keys) {
+		Map<String, String> preferenceMap = new LinkedHashMap<String, String>();
+		IPreferenceStore store = getDefault().getPreferenceStore();
+		
+		for (String key : convertKeys(store.getString(keys))) {
+			preferenceMap.put(key, store.getString(key));
+		}
+		return preferenceMap;
+	}
+	private static String[] convertKeys(String keys) {
+		if (keys == null) {
+			return new String[0];
+		}
+		List<String> keyList = new ArrayList<String>();
+		for (String key : keys.split(",")) {
+			keyList.add(key);
+		}
+		return keyList.toArray(new String[0]);
+	}
+	public static List<Param> getPreferenceAsParam(String keys) {
+		List<Param> params = new ArrayList<Param>(0);
+		for (Map.Entry<String, String> entry : setupPreference(keys).entrySet()) {
+			params.add(new Param(entry.getKey(), entry.getValue()));
+		}
+		return params;
+	}
 
+	
 }

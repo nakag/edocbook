@@ -47,7 +47,7 @@ public class DocbookXsl {
 	/** xsl:output properties */
 	private Properties outputProperties;
 	/** xsl:param parameter */
-	private Map<String, String> parameters;
+	private List<Param> parameters;
 	/** the the path of root directory of docbook-xsl */
 	private String rootDir;
 	/** the list of adding xsl:import */
@@ -75,7 +75,7 @@ public class DocbookXsl {
 	 *            the parameteres of &lt;xsl:param&gt;
 	 */
 	public DocbookXsl(String rootDir, Properties outputProperties,
-			Map<String, String> parameters) {
+			List<Param> parameters) {
 		this.rootDir = rootDir;
 		this.outputProperties = outputProperties;
 		this.parameters = parameters;
@@ -129,7 +129,7 @@ public class DocbookXsl {
 	/**
 	 * @return the parameters
 	 */
-	public Map<String, String> getParameters() {
+	public List<Param> getParameters() {
 		return parameters;
 	}
 
@@ -146,8 +146,8 @@ public class DocbookXsl {
 			transformer.setOutputProperty((String) entry.getKey(),
 					(String) entry.getValue());
 		}
-		for (Map.Entry<String, String> entry : parameters.entrySet()) {
-			transformer.setParameter(entry.getKey(), entry.getValue());
+		for (Param param : parameters) {
+			transformer.setParameter(param.getName(), param.getValue());
 		}
 		return transformer.transform(docbook, resultFileExtension);
 
@@ -180,7 +180,7 @@ public class DocbookXsl {
 	 * @param parameters
 	 *            the parameters to set
 	 */
-	public void setParameters(Map<String, String> parameters) {
+	public void setParameters(List<Param> parameters) {
 		this.parameters = parameters;
 	}
 }
