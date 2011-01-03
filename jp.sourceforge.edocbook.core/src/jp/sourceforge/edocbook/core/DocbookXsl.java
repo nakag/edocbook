@@ -29,7 +29,6 @@ package jp.sourceforge.edocbook.core;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -53,7 +52,7 @@ public class DocbookXsl {
 	/** the list of adding xsl:import */
 	private List<String> importXslList = new ArrayList<String>();
 	/** the list of overriding xsl:template */
-	private Map<String, String> templateList = new HashMap<String, String>();
+	private List<Template> templates;
 	/** the result file extension */
 	private String resultFileExtension;
 
@@ -91,8 +90,8 @@ public class DocbookXsl {
 		for (String s : importXslList) {
 			builder.addImport(s);
 		}
-		for (Map.Entry<String, String> entry : templateList.entrySet()) {
-			builder.addTemplate(entry.getKey(), entry.getValue());
+		for (Template template : templates) {
+			builder.addTemplate(template.getName(), template.getBody());
 		}
 		return new StreamSource(new ByteArrayInputStream(builder.getXslString()
 				.getBytes()), rootDir);// + "/virtual.xsl");
@@ -109,14 +108,20 @@ public class DocbookXsl {
 	}
 
 	/**
+	 * add the overriding xsl:template
 	 * 
-	 * @param name
-	 *            the name of Overriding xsl:template
-	 * @param body
-	 *            the body of xsl:template
+	 * @param Template
+	 *            the object of Overriding xsl:template
 	 */
-	public void addTemplate(String name, String body) {
-		templateList.put(name, body);
+	public void addTemplate(Template template) {
+		templates.add(template);
+	}
+	
+	/**
+	 * @param templates the templates to set
+	 */
+	public void setTemplates(List<Template> templates) {
+		this.templates = templates;
 	}
 
 	/**

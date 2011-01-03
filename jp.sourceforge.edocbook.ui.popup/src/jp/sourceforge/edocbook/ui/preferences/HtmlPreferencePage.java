@@ -28,6 +28,7 @@
 package jp.sourceforge.edocbook.ui.preferences;
 
 import jp.sourceforge.edocbook.core.Param;
+import jp.sourceforge.edocbook.core.Template;
 import jp.sourceforge.edocbook.ui.popup.Activator;
 import jp.sourceforge.edocbook.ui.popup.html.actions.AbstractHtmlCreateAction;
 
@@ -35,41 +36,51 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
+ * the html preference page
+ * 
  * @author nakaG
- *
+ * 
  */
-public class WorkbenchPreferencePage1 extends PreferencePage implements
+public class HtmlPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 	private HtmlParamPreferencePageComposite htmlParamPreferencePage;
 	private HtmlTemplatePreferencePageComposite htmlTemplatePreferencepage;
+
 	/**
-	 * 
+	 * the constructor
 	 */
-	public WorkbenchPreferencePage1() {
-		// TODO Auto-generated constructor stub
+	public HtmlPreferencePage() {
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 	}
 
 	/**
+	 * the constructor
+	 * 
 	 * @param title
+	 *            the title of the page
 	 */
-	public WorkbenchPreferencePage1(String title) {
+	public HtmlPreferencePage(String title) {
 		super(title);
 		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * the constructor
+	 * 
 	 * @param title
+	 *            the title of the page
 	 * @param image
+	 *            the image of the page
 	 */
-	public WorkbenchPreferencePage1(String title, ImageDescriptor image) {
+	public HtmlPreferencePage(String title, ImageDescriptor image) {
 		super(title, image);
 		// TODO Auto-generated constructor stub
 	}
@@ -82,21 +93,35 @@ public class WorkbenchPreferencePage1 extends PreferencePage implements
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
-		RowLayout layout = new RowLayout(SWT.VERTICAL);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
 		composite.setLayout(layout);
-		htmlParamPreferencePage = new HtmlParamPreferencePageComposite(composite, SWT.NULL, Activator.getPreferenceAsParam(AbstractHtmlCreateAction.PARAM_KEYS));
-		htmlTemplatePreferencepage = new HtmlTemplatePreferencePageComposite(composite, SWT.NULL);
-//		initializeValue();
+		htmlParamPreferencePage = new HtmlParamPreferencePageComposite(
+				composite,
+				SWT.NULL,
+				Activator
+						.getPreferenceAsParam(AbstractHtmlCreateAction.PARAM_KEYS));
+		GridData gridData1 = new GridData();
+		gridData1.grabExcessHorizontalSpace = true;
+		gridData1.grabExcessVerticalSpace = true;
+		gridData1.horizontalAlignment = GridData.FILL;
+		gridData1.verticalAlignment = GridData.FILL;
+		htmlParamPreferencePage.setLayoutData(gridData1);
+		htmlTemplatePreferencepage = new HtmlTemplatePreferencePageComposite(
+				composite,
+				SWT.NULL,
+				Activator
+						.getPreferenceAsTemplate(AbstractHtmlCreateAction.TEMPLATE_KEYS));
+		GridData gridData2 = new GridData();
+		gridData2.grabExcessHorizontalSpace = true;
+		gridData2.grabExcessVerticalSpace = true;
+		gridData2.horizontalAlignment = GridData.FILL;
+		gridData2.verticalAlignment = GridData.FILL;
+		htmlTemplatePreferencepage.setLayoutData(gridData2);
+
 		return composite;
 	}
-//	private void initializeValue() {
-//		for (Map.Entry<String, String> entry : Activator.setupPreference(AbstractHtmlCreateAction.PARAM_KEYS).entrySet()) {
-//			
-//		}
-//		for (Map.Entry<String, String> entry : Activator.setupPreference(AbstractHtmlCreateAction.TEMPLATE_KEYS).entrySet()) {
-//			
-//		}
-//	}
+
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -105,7 +130,7 @@ public class WorkbenchPreferencePage1 extends PreferencePage implements
 	@Override
 	public void init(IWorkbench workbench) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -129,7 +154,42 @@ public class WorkbenchPreferencePage1 extends PreferencePage implements
 		}
 		store.setValue(AbstractHtmlCreateAction.PARAM_KEYS, keys.toString());
 
+		keys = new StringBuilder();
+		added = false;
+		for (Template template : htmlTemplatePreferencepage.getTemplates()) {
+			if (added) {
+				keys.append(",");
+			} else {
+				added = true;
+			}
+			store.setValue(template.getName(), template.getBody());
+			keys.append(template.getName());
+		}
+		store.setValue(AbstractHtmlCreateAction.TEMPLATE_KEYS, keys.toString());
+
 		return super.performOk();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
+	 */
+	@Override
+	protected void performDefaults() {
+		// TODO Auto-generated method stub
+		super.performDefaults();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.jface.dialogs.DialogPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		super.dispose();
 	}
 
 }

@@ -25,44 +25,28 @@
  * {Corresponding Source for a non-source form of such a combination shall 
  * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
-package jp.sourceforge.edocbook.ui.preferences;
+
+package jp.sourceforge.edocbook.ui.preferences.dialog;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-
 /**
- * Model for editing of xsl:param
+ * Model for editing of xsl:template
  * 
  * @author nakaG
  * 
  */
-public class ParameterEditModel {
+public class TemplateEditModel {
 	private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-	public static final String PROPERTY_NAME = "_parameter_name";
-	public static final String PROPERTY_VALUE = "_parameter_value";
+	public static final String PROPERTY_NAME = "_template_name";
+	public static final String PROPERTY_BODY = "_template_body";
+	/** the name attribute of xsl:template */
 	private String name = "";
-	private String value = "";
-
-	/**
-	 * The constructor
-	 */
-	public ParameterEditModel() {
-	}
-
-	/**
-	 * The constructor
-	 * 
-	 * @param name
-	 *            the name of xsl:param
-	 * @param value
-	 */
-	public ParameterEditModel(String name, String value) {
-		super();
-		this.name = name;
-		this.value = value;
-	}
-
+	/** the body of xsl:template */
+	private String body = "";
+	
+	
 	/**
 	 * @return the name
 	 */
@@ -71,8 +55,7 @@ public class ParameterEditModel {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		String oldValue = this.name;
@@ -81,20 +64,19 @@ public class ParameterEditModel {
 	}
 
 	/**
-	 * @return the value
+	 * @return the body
 	 */
-	public String getValue() {
-		return value;
+	public String getBody() {
+		return body;
 	}
 
 	/**
-	 * @param value
-	 *            the value to set
+	 * @param body the body to set
 	 */
-	public void setValue(String value) {
-		String oldValue = this.value;
-		this.value = value;
-		firePropertyChange(PROPERTY_VALUE, oldValue, value);		
+	public void setBody(String body) {
+		String oldValue = this.body;
+		this.body = body;
+		firePropertyChange(PROPERTY_BODY, oldValue, body);
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {

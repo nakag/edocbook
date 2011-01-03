@@ -54,11 +54,9 @@ public class SingleHtmlCreateAction extends AbstractHtmlCreateAction {
 		DocbookXsl xsl = new DocbookXsl();
 		xsl.setOutputProperties(createOutputProperties());
 		xsl.setParameters(createParameters());
+		xsl.setTemplates(createTemlates());
 		xsl.setResultFileExtension("html");
 		xsl.addImport("html/docbook.xsl");
-		// xsl.addTemplate("user.footer.content",
-		// "<div style=\"border: 1px solid #9cf; padding: .5em;\">\n<div><a href=\"http://sourceforge.jp/\"><img width=\"210\" height=\"63\" border=\"0\" alt=\"SourceForge.JP\"><xsl:attribute name=\"src\">http://sourceforge.jp/sflogo.php?group_id=4743<![CDATA[&]]>type=3</xsl:attribute></img></a></div></div>"
-		// );
 		return xsl;
 	}
 

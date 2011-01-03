@@ -25,12 +25,12 @@
  * {Corresponding Source for a non-source form of such a combination shall 
  * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
-package jp.sourceforge.edocbook.ui.preferences;
+package jp.sourceforge.edocbook.ui.preferences.dialog;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import jp.sourceforge.edocbook.core.Param;
+import jp.sourceforge.edocbook.core.Template;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -41,33 +41,42 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
+ * the Template Edit Dialog
+ * 
  * @author nakaG
  * 
  */
-public class ParameterEditDialog extends Dialog {
-	private ParameterEditComposite composite;
-	private ParameterEditModel model;
-	private ParameterChangeListener listener;
+public class TemplateEditDialog extends Dialog {
+	private TemplateEditComposite composite;
+	private TemplateEditModel model;
+	private TemplateChangeListener listener;
+
 	/**
+	 * the constructor
+	 * 
 	 * @param parentShell
+	 *            parent
 	 */
-	public ParameterEditDialog(Shell parentShell) {
+	public TemplateEditDialog(Shell parentShell) {
 		this(parentShell, null);
 	}
 
 	/**
+	 * the constructor
 	 * 
 	 * @param parentShell
+	 *            parent
 	 * @param model
+	 *            the model to be editing
 	 */
-	public ParameterEditDialog(Shell parentShell, Param model) {
+	public TemplateEditDialog(Shell parentShell, Template model) {
 		super(parentShell);
-		this.model = new ParameterEditModel();
+		this.model = new TemplateEditModel();
 		if (model != null) {
 			this.model.setName(model.getName());
-			this.model.setValue(model.getValue());
+			this.model.setBody(model.getBody());
 		}
-		this.listener = new ParameterChangeListener();
+		this.listener = new TemplateChangeListener();
 		this.model.addPropertyChangeListener(listener);
 	}
 
@@ -78,33 +87,11 @@ public class ParameterEditDialog extends Dialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		getShell().setText("Edit xsl:parameter");
-		composite = new ParameterEditComposite(parent, SWT.NULL, model);
-//		composite.setParameterName(model.getName());
-//		composite.setParameterValue(model.getValue());
+		getShell().setText("Edit xsl:template");
+		composite = new TemplateEditComposite(parent, SWT.NULL, model);
 		return composite;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-	 */
-	@Override
-	protected void okPressed() {
-		super.okPressed();
-	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
-	 */
-	@Override
-	protected void cancelPressed() {
-		super.cancelPressed();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -112,16 +99,24 @@ public class ParameterEditDialog extends Dialog {
 	 */
 	@Override
 	public boolean close() {
-		System.out.println("dialog closed()");
 		this.model.removePropertyChangeListener(listener);
 		return super.close();
 	}
 
-	public Param getEditModel() {
-		return new Param(model.getName(), model.getValue());
+	/**
+	 * get the edit model.
+	 * 
+	 * @return the edited template object
+	 */
+	public Template getEditModel() {
+		return new Template(model.getName(), model.getBody());
 	}
-	
-	private class ParameterChangeListener implements PropertyChangeListener {
+
+	/**
+	 * the listener of Template Edit Model
+	 * 
+	 */
+	private class TemplateChangeListener implements PropertyChangeListener {
 
 		/**
 		 * {@inheritDoc}
@@ -131,8 +126,9 @@ public class ParameterEditDialog extends Dialog {
 		@Override
 		public void propertyChange(PropertyChangeEvent e) {
 			Button okButton = getButton(IDialogConstants.OK_ID);
-			okButton.setEnabled(((ParameterEditModel)e.getSource()).getName().length() != 0);
+			okButton.setEnabled(((TemplateEditModel) e.getSource()).getName()
+					.length() != 0);
 		}
-		
+
 	}
 }

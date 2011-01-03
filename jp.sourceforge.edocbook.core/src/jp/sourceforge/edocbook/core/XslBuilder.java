@@ -72,7 +72,7 @@ public class XslBuilder {
 	 */
 	public void addTemplate(String name, String body) {
 		builder.append("<xsl:template name=\"" + name + "\">");
-		builder.append(escape(body));
+		builder.append((body));
 		builder.append("</xsl:template> ");
 	}
 

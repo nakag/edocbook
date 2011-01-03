@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import jp.sourceforge.edocbook.core.Param;
+import jp.sourceforge.edocbook.core.Template;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -176,6 +177,12 @@ public class Activator extends AbstractUIPlugin {
 		}
 		return params;
 	}
-
+	public static List<Template> getPreferenceAsTemplate(String keys) {
+		List<Template> templates = new ArrayList<Template>(0);
+		for (Map.Entry<String, String> entry : setupPreference(keys).entrySet()) {
+			templates.add(new Template(entry.getKey(), entry.getValue()));
+		}
+		return templates;
+	}
 	
 }

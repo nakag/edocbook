@@ -1,5 +1,29 @@
-/**
+/*
+ * This file is part of Eclipse Docbook Plugin
  * 
+ * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Additional permission under GNU GPL version 3 section 7
+ * 
+ * If you modify this Program, or any covered work, by linking or combining 
+ * it with Eclipse (or a modified version of that library), 
+ * containing parts covered by the terms of Eclipse Public License, 
+ * the licensors of this Program grant you additional permission to convey the resulting work.
+ * {Corresponding Source for a non-source form of such a combination shall 
+ * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
 package jp.sourceforge.edocbook.ui.preferences;
 
@@ -7,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.sourceforge.edocbook.core.Param;
+import jp.sourceforge.edocbook.ui.preferences.dialog.ParameterEditDialog;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -61,12 +86,14 @@ public class HtmlParamPreferencePageComposite extends Composite {
 	private void createParameterGroup() {
 		GridData gridData6 = new GridData();
 		gridData6.grabExcessHorizontalSpace = true;
-		gridData6.verticalAlignment = GridData.CENTER;
+		gridData6.verticalAlignment = GridData.FILL;
+		gridData6.grabExcessVerticalSpace = true;
 		gridData6.horizontalAlignment = GridData.FILL;
 		GridData gridData1 = new GridData();
-		gridData1.heightHint = 80;
-		gridData1.verticalAlignment = GridData.CENTER;
+		gridData1.heightHint = -1;
+		gridData1.verticalAlignment = GridData.FILL;
 		gridData1.grabExcessHorizontalSpace = true;
+		gridData1.grabExcessVerticalSpace = true;
 		gridData1.horizontalAlignment = GridData.FILL;
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;

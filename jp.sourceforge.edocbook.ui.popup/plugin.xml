@@ -35,7 +35,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="jp.sourceforge.edocbook.ui.preferences.WorkbenchPreferencePage1"
+            class="jp.sourceforge.edocbook.ui.preferences.HtmlPreferencePage"
             id="jp.sourceforge.edocbook.ui.popup.page1"
             name="Docbook">
       </page>

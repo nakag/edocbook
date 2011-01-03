@@ -28,28 +28,28 @@
 package jp.sourceforge.edocbook.core;
 
 /**
- * an object of xsl:param
+ * an object of xsl:template
  * 
  * @author nakaG
  * 
  */
-public class Param {
-	/** the name attribute of xsl:param */
+public class Template {
+	/** the name attribute of xsl:template */
 	private String name;
-	/** the select attribute of xsl:param */
-	private String value;
+	/** the body of xsl:template */
+	private String body;
 
 	/**
 	 * the constructor
 	 * 
 	 * @param name
-	 *            the name attribute of xsl:param
-	 * @param value
-	 *            the select attribute of xsl:param
+	 *            the name attribute of xsl:template
+	 * @param body
+	 *            the body of xsl:template
 	 */
-	public Param(String name, String value) {
+	public Template(String name, String body) {
 		this.name = name;
-		this.value = value;
+		this.body = body;
 	}
 
 	/**
@@ -60,9 +60,10 @@ public class Param {
 	}
 
 	/**
-	 * @return the value
+	 * @return the body
 	 */
-	public String getValue() {
-		return value;
+	public String getBody() {
+		return body;
 	}
+
 }

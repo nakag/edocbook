@@ -25,29 +25,42 @@
  * {Corresponding Source for a non-source form of such a combination shall 
  * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
-package jp.sourceforge.edocbook.core;
+package jp.sourceforge.edocbook.ui.preferences.dialog;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
- * an object of xsl:param
+ * Model for editing of xsl:param
  * 
  * @author nakaG
  * 
  */
-public class Param {
+public class ParameterEditModel {
+	private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	public static final String PROPERTY_NAME = "_parameter_name";
+	public static final String PROPERTY_VALUE = "_parameter_value";
 	/** the name attribute of xsl:param */
-	private String name;
+	private String name = "";
 	/** the select attribute of xsl:param */
-	private String value;
+	private String value = "";
 
 	/**
-	 * the constructor
+	 * The constructor
+	 */
+	public ParameterEditModel() {
+	}
+
+	/**
+	 * The constructor
 	 * 
 	 * @param name
-	 *            the name attribute of xsl:param
+	 *            the name of xsl:param
 	 * @param value
 	 *            the select attribute of xsl:param
 	 */
-	public Param(String name, String value) {
+	public ParameterEditModel(String name, String value) {
+		super();
 		this.name = name;
 		this.value = value;
 	}
@@ -60,9 +73,43 @@ public class Param {
 	}
 
 	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		String oldValue = this.name;
+		this.name = name;
+		firePropertyChange(PROPERTY_NAME, oldValue, name);
+	}
+
+	/**
 	 * @return the value
 	 */
 	public String getValue() {
 		return value;
 	}
+
+	/**
+	 * @param value
+	 *            the value to set
+	 */
+	public void setValue(String value) {
+		String oldValue = this.value;
+		this.value = value;
+		firePropertyChange(PROPERTY_VALUE, oldValue, value);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		listeners.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		listeners.removePropertyChangeListener(listener);
+	}
+
+	public void firePropertyChange(String propName, Object oldValue,
+			Object newValue) {
+		listeners.firePropertyChange(propName, oldValue, newValue);
+	}
+
 }

@@ -1,10 +1,39 @@
-/**
+/*
+ * This file is part of Eclipse Docbook Plugin
  * 
+ * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Additional permission under GNU GPL version 3 section 7
+ * 
+ * If you modify this Program, or any covered work, by linking or combining 
+ * it with Eclipse (or a modified version of that library), 
+ * containing parts covered by the terms of Eclipse Public License, 
+ * the licensors of this Program grant you additional permission to convey the resulting work.
+ * {Corresponding Source for a non-source form of such a combination shall 
+ * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
 package jp.sourceforge.edocbook.ui.preferences;
 
-import jp.sourceforge.edocbook.core.Param;
+import java.util.ArrayList;
+import java.util.List;
 
+import jp.sourceforge.edocbook.core.Template;
+import jp.sourceforge.edocbook.ui.preferences.dialog.TemplateEditDialog;
+
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -23,7 +52,7 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public class HtmlTemplatePreferencePageComposite extends Composite {
-//	private java.util.List<Param> parameters;
+	private java.util.List<Template> templates;
 	private Group templateGroup = null;
 	private Table templateTable = null;
 	private Composite templateButtonComposite = null;
@@ -31,9 +60,9 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 	private Button templateEditButton = null;
 	private Button templateDeleteButton = null;
 	private Text templateTextArea = null;
-	public HtmlTemplatePreferencePageComposite(Composite parent, int style) {
+	public HtmlTemplatePreferencePageComposite(Composite parent, int style, java.util.List<Template> templates) {
 		super(parent, style);
-//		this.parameters = parameters;
+		this.templates = templates;
 		initialize();
 	}
 
@@ -42,15 +71,15 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 		this.setLayout(new GridLayout());
 		setSize(new Point(399, 369));
 		setLayout(new GridLayout());
-		updateParamTable();
+		updateTemplateTable();
 	}
-	private void updateParamTable() {
+	private void updateTemplateTable() {
 		templateTable.removeAll();
-//		for (Param param : parameters) {
-//			TableItem item = new TableItem(templateTable, SWT.NULL);
-//			item.setText(0, param.getName());
-//			item.setText(1, param.getValue());
-//		}
+		for (Template template : templates) {
+			TableItem item = new TableItem(templateTable, SWT.NULL);
+			item.setText(0, template.getName());
+//			item.setText(1, template.getBody());
+		}
 	}
 	/**
 	 * This method initializes templateGroup	
@@ -65,14 +94,14 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 		GridData gridData4 = new GridData();
 		gridData4.horizontalAlignment = GridData.FILL;
 		gridData4.heightHint = -1;
-		gridData4.horizontalSpan = 2;
 		gridData4.grabExcessHorizontalSpace = true;
 		gridData4.grabExcessVerticalSpace = true;
 		gridData4.verticalAlignment = GridData.FILL;
 		GridData gridData3 = new GridData();
 		gridData3.horizontalAlignment = GridData.FILL;
-		gridData3.heightHint = 80;
+		gridData3.heightHint = -1;
 		gridData3.grabExcessHorizontalSpace = true;
+		gridData3.grabExcessVerticalSpace = false;
 		gridData3.verticalAlignment = GridData.FILL;
 		GridLayout gridLayout1 = new GridLayout();
 		gridLayout1.numColumns = 2;
@@ -84,15 +113,22 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 		templateTable.setHeaderVisible(true);
 		templateTable.setLayoutData(gridData3);
 		templateTable.setLinesVisible(true);
+		templateTable
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+						int index = templateTable.getSelectionIndex();
+						if (index == -1) {
+							return;
+						}
+						templateTextArea.setText(templates.get(index).getBody());
+					}
+				});
 		createTemplateButtonComposite();
-		templateTextArea = new Text(templateGroup, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL|SWT.BORDER);
+		templateTextArea = new Text(templateGroup, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 		templateTextArea.setLayoutData(gridData4);
 		TableColumn tableColumn2 = new TableColumn(templateTable, SWT.NONE);
-		tableColumn2.setWidth(150);
+		tableColumn2.setWidth(200);
 		tableColumn2.setText("template name");
-		TableColumn tableColumn3 = new TableColumn(templateTable, SWT.NONE);
-		tableColumn3.setWidth(60);
-		tableColumn3.setText("body");
 	}
 
 	/**
@@ -115,17 +151,61 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 		templateButtonComposite.setLayoutData(gridData2);
 		temlpateAddButton = new Button(templateButtonComposite, SWT.NONE);
 		temlpateAddButton.setText("Add");
+		temlpateAddButton
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+						TemplateEditDialog dialog = new TemplateEditDialog(getShell());
+						if (dialog.open() == Dialog.OK) {
+							templates.add(dialog.getEditModel());
+							updateTemplateTable();
+						}
+					}
+				});
 		templateEditButton = new Button(templateButtonComposite, SWT.NONE);
 		templateEditButton.setText("Edit");
+		templateEditButton
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+						int index = templateTable.getSelectionIndex();
+						if (index == -1) {
+							return;
+						}
+						TemplateEditDialog dialog = new TemplateEditDialog(getShell(), templates.get(index));
+						if (dialog.open() == Dialog.OK) {
+							Template template = dialog.getEditModel();
+							templates.remove(index);
+							templates.add(template);
+							updateTemplateTable();
+						}
+					}
+				});
 		templateDeleteButton = new Button(templateButtonComposite, SWT.NONE);
 		templateDeleteButton.setText("Delete");
+		templateDeleteButton
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+						int[] indices = templateTable.getSelectionIndices();
+						if (indices.length == 0) {
+							return;
+						}
+						List<Template> removedList = new ArrayList<Template>();
+						for (int i : indices) {
+							removedList.add(templates.get(i));
+						}
+						for (Template t : removedList) {
+							templates.remove(t);
+						}
+						updateTemplateTable();
+					}
+				});
 	}
 
-//	/**
-//	 * @return the parameters
-//	 */
-//	public java.util.List<Param> getParameters() {
-//		return parameters;
-//	}
+	/**
+	 * @return the templates
+	 */
+	public java.util.List<Template> getTemplates() {
+		return templates;
+	}
+
 	
 }  //  @jve:decl-index=0:visual-constraint="-9,6"

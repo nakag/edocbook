@@ -54,6 +54,7 @@ public class MultipleHtmlCreateAction extends AbstractHtmlCreateAction {
 		DocbookXsl xsl = new DocbookXsl();
 		xsl.setOutputProperties(createOutputProperties());
 		xsl.setParameters(createParameters());
+		xsl.setTemplates(createTemlates());
 		xsl.setResultFileExtension("html");
 		xsl.addImport("html/chunk.xsl");
 		return xsl;

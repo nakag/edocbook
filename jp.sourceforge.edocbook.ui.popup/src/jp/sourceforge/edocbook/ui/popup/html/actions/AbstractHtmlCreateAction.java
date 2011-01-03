@@ -38,6 +38,7 @@ import jp.sourceforge.edocbook.core.DocbookFile;
 import jp.sourceforge.edocbook.core.DocbookXsl;
 import jp.sourceforge.edocbook.core.EDocbookRuntimeException;
 import jp.sourceforge.edocbook.core.Param;
+import jp.sourceforge.edocbook.core.Template;
 import jp.sourceforge.edocbook.ui.popup.Activator;
 import jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction;
 
@@ -101,7 +102,6 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 
 	@Override
 	protected List<Param> createParameters() {
-		Activator.getDefault();
 		Map<String, String> params = Activator.setupPreference(PARAM_KEYS);
 		List<Param> parameters = new ArrayList<Param>();
 		for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -116,7 +116,12 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 	 * @see jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction#createTemlates()
 	 */
 	@Override
-	protected Map<String, String> createTemlates() {
-		return Activator.getDefault().setupPreference(TEMPLATE_KEYS);
+	protected List<Template> createTemlates() {
+		Map<String, String> templateMap = Activator.setupPreference(TEMPLATE_KEYS);
+		List<Template> templates = new ArrayList<Template>();
+		for (Map.Entry<String, String> entry : templateMap.entrySet()) {
+			templates.add(new Template(entry.getKey(), entry.getValue()));
+		}
+		return templates;
 	}
 }

@@ -28,13 +28,13 @@
 package jp.sourceforge.edocbook.ui.popup.actions;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import jp.sourceforge.edocbook.core.DocbookFile;
 import jp.sourceforge.edocbook.core.DocbookXsl;
 import jp.sourceforge.edocbook.core.EDocbookRuntimeException;
 import jp.sourceforge.edocbook.core.Param;
+import jp.sourceforge.edocbook.core.Template;
 import jp.sourceforge.edocbook.ui.popup.Activator;
 
 import org.eclipse.core.resources.IFile;
@@ -63,7 +63,7 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 
 	protected abstract List<Param> createParameters();
 
-	protected abstract Map<String, String> createTemlates();
+	protected abstract List<Template> createTemlates();
 
 	protected abstract Properties createOutputProperties();
 
