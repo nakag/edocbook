@@ -124,7 +124,7 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 					}
 				});
 		createTemplateButtonComposite();
-		templateTextArea = new Text(templateGroup, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
+		templateTextArea = new Text(templateGroup, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
 		templateTextArea.setLayoutData(gridData4);
 		TableColumn tableColumn2 = new TableColumn(templateTable, SWT.NONE);
 		tableColumn2.setWidth(200);
