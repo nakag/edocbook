@@ -156,7 +156,9 @@ public class Activator extends AbstractUIPlugin {
 		IPreferenceStore store = getDefault().getPreferenceStore();
 		
 		for (String key : convertKeys(store.getString(keys))) {
-			preferenceMap.put(key, store.getString(key));
+			if (key.length() != 0) {
+				preferenceMap.put(key, store.getString(key));
+			}
 		}
 		return preferenceMap;
 	}

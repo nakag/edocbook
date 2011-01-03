@@ -27,9 +27,7 @@
  */
 package jp.sourceforge.edocbook.ui.popup.html.actions;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
@@ -102,12 +100,7 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 
 	@Override
 	protected List<Param> createParameters() {
-		Map<String, String> params = Activator.setupPreference(PARAM_KEYS);
-		List<Param> parameters = new ArrayList<Param>();
-		for (Map.Entry<String, String> entry : params.entrySet()) {
-			parameters.add(new Param(entry.getKey(), entry.getValue()));
-		}
-		return parameters;
+		return Activator.getPreferenceAsParam(PARAM_KEYS);
 	}
 
 	/**
@@ -117,11 +110,6 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 	 */
 	@Override
 	protected List<Template> createTemlates() {
-		Map<String, String> templateMap = Activator.setupPreference(TEMPLATE_KEYS);
-		List<Template> templates = new ArrayList<Template>();
-		for (Map.Entry<String, String> entry : templateMap.entrySet()) {
-			templates.add(new Template(entry.getKey(), entry.getValue()));
-		}
-		return templates;
+		return Activator.getPreferenceAsTemplate(TEMPLATE_KEYS);
 	}
 }
