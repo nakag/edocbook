@@ -101,7 +101,7 @@ public class HtmlParamPreferencePageComposite extends Composite {
 		parameterGroup.setLayout(gridLayout);
 		parameterGroup.setLayoutData(gridData6);
 		parameterGroup.setText("xsl:param");
-		parameterTable = new Table(parameterGroup, SWT.NONE);
+		parameterTable = new Table(parameterGroup, SWT.MULTI);
 		parameterTable.setHeaderVisible(true);
 		parameterTable.setLayoutData(gridData1);
 		parameterTable.setLinesVisible(true);
@@ -136,11 +136,11 @@ public class HtmlParamPreferencePageComposite extends Composite {
 		paramAddButton
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-						System.out.println("widgetSelected()"); // TODO Auto-generated Event stub widgetSelected()
 						ParameterEditDialog dialog = new ParameterEditDialog(getShell());
 						if (dialog.open() == Dialog.OK) {
 							parameters.add(dialog.getEditModel());
 							updateParamTable();
+							parameterTable.select(parameters.size() - 1);
 						}
 					}
 				});
@@ -156,6 +156,7 @@ public class HtmlParamPreferencePageComposite extends Composite {
 							parameters.remove(index);
 							parameters.add(index, param);
 							updateParamTable();
+							parameterTable.select(index);
 						}
 					}
 				});
@@ -169,13 +170,19 @@ public class HtmlParamPreferencePageComposite extends Composite {
 							return;
 						}
 						List<Param> removedList = new ArrayList<Param>(0);
+						int lastIndex = 0;
 						for (int i : indices) {
 							removedList.add(parameters.get(i));
+							lastIndex = i;
 						}
 						for (Param p : removedList) {
 							parameters.remove(p);
 						}
 						updateParamTable();
+						if (lastIndex >= parameters.size()) {
+							lastIndex = parameters.size() - 1;
+						}
+						parameterTable.select(lastIndex);
 					}
 				});
 	}

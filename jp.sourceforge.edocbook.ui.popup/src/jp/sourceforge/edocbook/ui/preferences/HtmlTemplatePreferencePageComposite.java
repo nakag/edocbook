@@ -109,7 +109,7 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 		templateGroup.setText("xsl:template");
 		templateGroup.setLayoutData(gridData5);
 		templateGroup.setLayout(gridLayout1);
-		templateTable = new Table(templateGroup, SWT.NONE);
+		templateTable = new Table(templateGroup, SWT.MULTI);
 		templateTable.setHeaderVisible(true);
 		templateTable.setLayoutData(gridData3);
 		templateTable.setLinesVisible(true);
@@ -158,6 +158,9 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 						if (dialog.open() == Dialog.OK) {
 							templates.add(dialog.getEditModel());
 							updateTemplateTable();
+							int index = templates.size() - 1;
+							templateTable.select(index);
+							templateTextArea.setText(templates.get(index).getBody());
 						}
 					}
 				});
@@ -176,6 +179,8 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 							templates.remove(index);
 							templates.add(template);
 							updateTemplateTable();
+							templateTable.select(index);
+							templateTextArea.setText(templates.get(index).getBody());
 						}
 					}
 				});
@@ -188,14 +193,21 @@ public class HtmlTemplatePreferencePageComposite extends Composite {
 						if (indices.length == 0) {
 							return;
 						}
+						int lastIndex = 0;
 						List<Template> removedList = new ArrayList<Template>();
 						for (int i : indices) {
 							removedList.add(templates.get(i));
+							lastIndex = i;
 						}
 						for (Template t : removedList) {
 							templates.remove(t);
 						}
 						updateTemplateTable();
+						if (lastIndex >= templates.size()) {
+							lastIndex = templates.size() - 1;
+						}
+						templateTable.select(lastIndex);
+						templateTextArea.setText(templates.get(lastIndex).getBody());
 					}
 				});
 	}
