@@ -101,7 +101,7 @@ public class TemplateEditDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
 		Button okButton = getButton(IDialogConstants.OK_ID);
-		okButton.setEnabled(false);
+		okButton.setEnabled(model.getName().length() != 0);
 	}
 
 	/**
