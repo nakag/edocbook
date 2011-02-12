@@ -1,7 +1,7 @@
 /*
  * This file is part of Eclipse Docbook Plugin
  * 
- * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ * Copyright (C) 2010-2011 nakaG <nakag@users.sourceforge.jp>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ package jp.sourceforge.edocbook.ui.preferences;
 import jp.sourceforge.edocbook.core.Param;
 import jp.sourceforge.edocbook.core.Template;
 import jp.sourceforge.edocbook.ui.popup.Activator;
-import jp.sourceforge.edocbook.ui.popup.html.actions.AbstractHtmlCreateAction;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -52,7 +51,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class HtmlPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 	private HtmlParamPreferencePageComposite htmlParamPreferencePage;
-	private HtmlTemplatePreferencePageComposite htmlTemplatePreferencepage;
+	private HtmlTemplatePreferencePageComposite htmlTemplatePreferencePage;
+	private HtmlOutputDirectoryPreferencePageComposite htmlOutputDirectoryPreferencePage;
 
 	/**
 	 * the constructor
@@ -97,27 +97,30 @@ public class HtmlPreferencePage extends PreferencePage implements
 		layout.numColumns = 1;
 		composite.setLayout(layout);
 		htmlParamPreferencePage = new HtmlParamPreferencePageComposite(
-				composite,
-				SWT.NULL,
-				Activator
-						.getPreferenceAsParam(AbstractHtmlCreateAction.PARAM_KEYS));
+				composite, SWT.NULL, Activator.getPreferenceAsParam());
 		GridData gridData1 = new GridData();
 		gridData1.grabExcessHorizontalSpace = true;
 		gridData1.grabExcessVerticalSpace = true;
 		gridData1.horizontalAlignment = GridData.FILL;
 		gridData1.verticalAlignment = GridData.FILL;
 		htmlParamPreferencePage.setLayoutData(gridData1);
-		htmlTemplatePreferencepage = new HtmlTemplatePreferencePageComposite(
-				composite,
-				SWT.NULL,
-				Activator
-						.getPreferenceAsTemplate(AbstractHtmlCreateAction.TEMPLATE_KEYS));
+		htmlTemplatePreferencePage = new HtmlTemplatePreferencePageComposite(
+				composite, SWT.NULL, Activator.getPreferenceAsTemplate());
 		GridData gridData2 = new GridData();
 		gridData2.grabExcessHorizontalSpace = true;
 		gridData2.grabExcessVerticalSpace = true;
 		gridData2.horizontalAlignment = GridData.FILL;
 		gridData2.verticalAlignment = GridData.FILL;
-		htmlTemplatePreferencepage.setLayoutData(gridData2);
+		htmlTemplatePreferencePage.setLayoutData(gridData2);
+
+		htmlOutputDirectoryPreferencePage = new HtmlOutputDirectoryPreferencePageComposite(
+				composite, SWT.NULL, Activator.getOutputDirectory());
+		GridData gridData3 = new GridData();
+		gridData3.grabExcessHorizontalSpace = true;
+		gridData3.grabExcessVerticalSpace = true;
+		gridData3.horizontalAlignment = GridData.FILL;
+		gridData3.verticalAlignment = GridData.FILL;
+		htmlOutputDirectoryPreferencePage.setLayoutData(gridData3);
 
 		return composite;
 	}
@@ -152,11 +155,11 @@ public class HtmlPreferencePage extends PreferencePage implements
 			store.setValue(param.getName(), param.getValue());
 			keys.append(param.getName());
 		}
-		store.setValue(AbstractHtmlCreateAction.PARAM_KEYS, keys.toString());
+		store.setValue(Activator.PARAM_KEYS, keys.toString());
 
 		keys = new StringBuilder();
 		added = false;
-		for (Template template : htmlTemplatePreferencepage.getTemplates()) {
+		for (Template template : htmlTemplatePreferencePage.getTemplates()) {
 			if (added) {
 				keys.append(",");
 			} else {
@@ -165,8 +168,10 @@ public class HtmlPreferencePage extends PreferencePage implements
 			store.setValue(template.getName(), template.getBody());
 			keys.append(template.getName());
 		}
-		store.setValue(AbstractHtmlCreateAction.TEMPLATE_KEYS, keys.toString());
+		store.setValue(Activator.TEMPLATE_KEYS, keys.toString());
 
+		store.setValue(Activator.OUTPUT_DIRECTORY_KEY,
+				htmlOutputDirectoryPreferencePage.getOutputDirectory());
 		return super.performOk();
 	}
 

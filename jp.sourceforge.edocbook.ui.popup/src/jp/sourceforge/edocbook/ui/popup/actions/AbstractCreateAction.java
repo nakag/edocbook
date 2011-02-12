@@ -37,9 +37,11 @@ import jp.sourceforge.edocbook.core.Param;
 import jp.sourceforge.edocbook.core.Template;
 import jp.sourceforge.edocbook.ui.popup.Activator;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -136,11 +138,43 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 		}
 		return null;
 	}
-
+	private IProject getProject() {
+		IFile iFile = getSelection();
+		if (iFile == null) {
+			return null;
+		}
+		IContainer container = iFile.getParent();
+		if (container == null) {
+			return null;
+		}
+		return container.getProject();
+	}
+	protected String getOutputDirectory() {
+		String directory = Activator.getOutputDirectory();
+		if (directory.length() == 0) {
+			return null;
+		}
+		IProject project = getProject();
+		if (project == null) {
+			return null;
+		}
+		IFolder folder = project.getFolder(directory);
+		if (!folder.exists()) {
+			try {
+				folder.create(false, true, null);
+			} catch (CoreException e) {
+				Activator.showErrorDialog(e);
+				throw new EDocbookRuntimeException(e);
+			}
+		}
+		return folder.getLocation().toString();
+	}
 	protected void reflesh() {
 		try {
-			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(
-					IResource.DEPTH_INFINITE, null);
+			IProject project = getProject();
+			if (project != null) {
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			}
 		} catch (CoreException e) {
 			Activator.showErrorDialog(e);
 			throw new EDocbookRuntimeException(e);

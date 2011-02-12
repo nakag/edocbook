@@ -1,7 +1,7 @@
 /*
  * This file is part of Eclipse Docbook Plugin
  * 
- * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ * Copyright (C) 2010-2011 nakaG <nakag@users.sourceforge.jp>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,11 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 
+	public static final String OUTPUT_DIRECTORY_KEY = "jp.sourceforge.edocbook.ui.popup.html.output_directory_key";
+
+	public static final String PARAM_KEYS = "jp.sourceforge.edocbook.ui.popup.html.param_keys";
+
+	public static final String TEMPLATE_KEYS = "jp.sourceforge.edocbook.ui.popup.html.template_keys";
 	/**
 	 * The constructor
 	 */
@@ -151,7 +156,7 @@ public class Activator extends AbstractUIPlugin {
 		getDefault().getLog().log(status);
 		t.printStackTrace();
 	}
-	public static Map<String, String> setupPreference(String keys) {
+	private static Map<String, String> setupPreference(String keys) {
 		Map<String, String> preferenceMap = new LinkedHashMap<String, String>();
 		IPreferenceStore store = getDefault().getPreferenceStore();
 		
@@ -172,19 +177,22 @@ public class Activator extends AbstractUIPlugin {
 		}
 		return keyList.toArray(new String[0]);
 	}
-	public static List<Param> getPreferenceAsParam(String keys) {
+	public static List<Param> getPreferenceAsParam() {
 		List<Param> params = new ArrayList<Param>(0);
-		for (Map.Entry<String, String> entry : setupPreference(keys).entrySet()) {
+		for (Map.Entry<String, String> entry : setupPreference(PARAM_KEYS).entrySet()) {
 			params.add(new Param(entry.getKey(), entry.getValue()));
 		}
 		return params;
 	}
-	public static List<Template> getPreferenceAsTemplate(String keys) {
+	public static List<Template> getPreferenceAsTemplate() {
 		List<Template> templates = new ArrayList<Template>(0);
-		for (Map.Entry<String, String> entry : setupPreference(keys).entrySet()) {
+		for (Map.Entry<String, String> entry : setupPreference(TEMPLATE_KEYS).entrySet()) {
 			templates.add(new Template(entry.getKey(), entry.getValue()));
 		}
 		return templates;
 	}
-	
+	public static String getOutputDirectory() {
+		IPreferenceStore store = getDefault().getPreferenceStore();
+		return store.getString(OUTPUT_DIRECTORY_KEY);
+	}
 }

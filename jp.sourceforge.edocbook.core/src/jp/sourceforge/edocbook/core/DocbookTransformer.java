@@ -1,7 +1,7 @@
 /*
  * This file is part of Eclipse Docbook Plugin
  * 
- * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ * Copyright (C) 2010-2011 nakaG <nakag@users.sourceforge.jp>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,6 @@
  * include the source code for the parts of Eclipse used as well as that of the covered work.}
  */
 package jp.sourceforge.edocbook.core;
-
-import java.io.File;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -60,18 +58,15 @@ public class DocbookTransformer {
 	 * 
 	 * @param source
 	 *            the docbook file
-	 * @param extension
-	 *            the extension of result file
-	 * @return the result file
+	 * @param result
+	 *            the result file
+	 * @throws EDocbookRuntimeException
 	 */
-	public ResultFile transform(DocbookFile source, String extension) {
+	public void transform(DocbookFile source, ResultFile result) {
 		try {
 			assert transformer != null;
 
-			ResultFile result = new ResultFile(getReplaceExtensionFile(source,
-					extension));
 			transformer.transform(source.getSource(), result.getResult());
-			return result;
 		} catch (TransformerException e) {
 			e.printStackTrace();
 			throw new EDocbookRuntimeException(e);
@@ -100,22 +95,6 @@ public class DocbookTransformer {
 	 */
 	public void setParameter(String param, String value) {
 		transformer.setParameter(param, value);
-	}
-
-	/**
-	 * get file replaced extension
-	 * 
-	 * @param source
-	 *            the DocbookFile
-	 * @param ext
-	 *            extension to replace
-	 * @return the file named fileName + extension
-	 */
-	private File getReplaceExtensionFile(DocbookFile source, String ext) {
-		String systemId = source.getSystemId();
-		int idx = systemId.lastIndexOf(".");
-		String newPath = systemId.substring(0, idx) + "." + ext;
-		return new File(newPath);
 	}
 
 	private Transformer createTransformer(Source xsl) {

@@ -1,7 +1,7 @@
 /*
  * This file is part of Eclipse Docbook Plugin
  * 
- * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ * Copyright (C) 2010-2011 nakaG <nakag@users.sourceforge.jp>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,9 +116,10 @@ public class DocbookXsl {
 	public void addTemplate(Template template) {
 		templates.add(template);
 	}
-	
+
 	/**
-	 * @param templates the templates to set
+	 * @param templates
+	 *            the templates to set
 	 */
 	public void setTemplates(List<Template> templates) {
 		this.templates = templates;
@@ -143,9 +144,10 @@ public class DocbookXsl {
 	 * 
 	 * @param docbook
 	 *            the docbook
-	 * @return result file
+	 * @param result
+	 *            the result
 	 */
-	public ResultFile apply(DocbookFile docbook) {
+	public void apply(DocbookFile docbook, ResultFile result) {
 		DocbookTransformer transformer = new DocbookTransformer(getSource());
 		for (Map.Entry<Object, Object> entry : outputProperties.entrySet()) {
 			transformer.setOutputProperty((String) entry.getKey(),
@@ -154,8 +156,7 @@ public class DocbookXsl {
 		for (Param param : parameters) {
 			transformer.setParameter(param.getName(), param.getValue());
 		}
-		return transformer.transform(docbook, resultFileExtension);
-
+		transformer.transform(docbook, result);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /*
  * This file is part of Eclipse Docbook Plugin
  * 
- * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ * Copyright (C) 2010-2011 nakaG <nakag@users.sourceforge.jp>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,12 +45,24 @@ public class ResultFile {
 	/**
 	 * The constructor
 	 * 
-	 * @param file
-	 *            output file
+	 * @param source
+	 *            the Docbook file
+	 * @param path
+	 *            the output path. if null, result files output the same path of
+	 *            source.
+	 * @param ext
+	 *            the extension of the result files.
 	 */
-	public ResultFile(File file) {
-		this.resultFile = file;
-
+	public ResultFile(DocbookFile source, String path, String ext) {
+		String systemId = source.getSystemId();
+		int idx = systemId.lastIndexOf(".");
+		String newPath = systemId.substring(0, idx) + "." + ext;
+		// String separetor = System.getProperty("line.separator");
+		if (path != null && path.length() != 0) {
+			String fileName = newPath.substring(newPath.lastIndexOf("/"));
+			newPath = path + fileName;
+		}
+		this.resultFile = new File(newPath);
 	}
 
 	/**
@@ -61,6 +73,7 @@ public class ResultFile {
 	public Result getResult() {
 		return new StreamResult(resultFile.toURI().getPath());
 	}
+
 	/**
 	 * 
 	 * {@inheritDoc}

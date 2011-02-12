@@ -36,6 +36,7 @@ import jp.sourceforge.edocbook.core.DocbookFile;
 import jp.sourceforge.edocbook.core.DocbookXsl;
 import jp.sourceforge.edocbook.core.EDocbookRuntimeException;
 import jp.sourceforge.edocbook.core.Param;
+import jp.sourceforge.edocbook.core.ResultFile;
 import jp.sourceforge.edocbook.core.Template;
 import jp.sourceforge.edocbook.ui.popup.Activator;
 import jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction;
@@ -50,9 +51,6 @@ import org.eclipse.ui.IActionDelegate;
  * 
  */
 public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
-	public static final String PARAM_KEYS = "jp.sourceforge.edocbook.ui.popup.html.param_keys";
-	public static final String TEMPLATE_KEYS = "jp.sourceforge.edocbook.ui.popup.html.template_keys";
-
 	/**
 	 * the constructor
 	 */
@@ -72,8 +70,10 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 			if (source == null) {
 				return;
 			}
-			// ResultFile result =
-			createXslFile().apply(source);
+			ResultFile result = new ResultFile(source, getOutputDirectory(),
+					"html");
+
+			createXslFile().apply(source, result);
 			reflesh();
 			Activator.showMessageDialog("Output completed.");
 		} catch (EDocbookRuntimeException e) {
@@ -98,9 +98,15 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 		return prop;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 * @see jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction#createParameters()
+	 */
 	@Override
 	protected List<Param> createParameters() {
-		return Activator.getPreferenceAsParam(PARAM_KEYS);
+		return Activator.getPreferenceAsParam();
 	}
 
 	/**
@@ -110,6 +116,6 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 	 */
 	@Override
 	protected List<Template> createTemlates() {
-		return Activator.getPreferenceAsTemplate(TEMPLATE_KEYS);
+		return Activator.getPreferenceAsTemplate();
 	}
 }
