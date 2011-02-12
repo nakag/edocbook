@@ -41,6 +41,7 @@ import jp.sourceforge.edocbook.core.Template;
 import jp.sourceforge.edocbook.ui.popup.Activator;
 import jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IActionDelegate;
 
@@ -94,7 +95,12 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 				"http://www.w3.org/TR/html4/loose.dtd");
 		prop.put(OutputKeys.METHOD, "html");
 		prop.put(OutputKeys.INDENT, "yes");
-		prop.put(OutputKeys.ENCODING, "UTF-8");
+		try {
+			prop.put(OutputKeys.ENCODING, getSelection().getCharset());
+		} catch (CoreException e) {
+			e.printStackTrace();
+			prop.put(OutputKeys.ENCODING, "UTF-8");
+		}
 		return prop;
 	}
 
