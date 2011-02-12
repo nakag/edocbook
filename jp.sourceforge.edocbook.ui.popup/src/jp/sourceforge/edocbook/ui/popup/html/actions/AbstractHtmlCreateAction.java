@@ -1,7 +1,7 @@
 /*
  * This file is part of Eclipse Docbook Plugin
  * 
- * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ * Copyright (C) 2010-2011 nakaG <nakag@users.sourceforge.jp>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ import javax.xml.transform.OutputKeys;
 
 import jp.sourceforge.edocbook.core.DocbookFile;
 import jp.sourceforge.edocbook.core.DocbookXsl;
-import jp.sourceforge.edocbook.core.EDocbookRuntimeException;
 import jp.sourceforge.edocbook.core.Param;
 import jp.sourceforge.edocbook.core.ResultFile;
 import jp.sourceforge.edocbook.core.Template;
@@ -42,7 +41,11 @@ import jp.sourceforge.edocbook.ui.popup.Activator;
 import jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 
 /**
@@ -66,25 +69,48 @@ public abstract class AbstractHtmlCreateAction extends AbstractCreateAction {
 	 */
 	@Override
 	public void run(IAction action) {
-		try {
-			DocbookFile source = getSourceFile();
-			if (source == null) {
-				return;
-			}
-			ResultFile result = new ResultFile(source, getOutputDirectory(),
-					"html");
+		Shell shell = getPart().getSite().getShell();
+		ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
+		final DocbookFile source = getSourceFile();
+		if (source == null) {
+			return;
+		}
 
-			createXslFile().apply(source, result);
-			reflesh();
-			Activator.showMessageDialog("Output completed.");
-		} catch (EDocbookRuntimeException e) {
+		try {
+			dialog.run(true, false, new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) {
+					monitor.beginTask("start eclipse docbook plugin", 4);
+
+					monitor.setTaskName("create result file");
+					ResultFile result = new ResultFile(source,
+							getOutputDirectory(), "html");
+					monitor.worked(1);
+
+					monitor.setTaskName("create xsl file");
+					DocbookXsl xsl = createXslFile();
+					monitor.worked(2);
+
+					monitor.setTaskName("apply style sheet");
+					xsl.apply(source, result);
+					monitor.worked(3);
+
+					monitor.setTaskName("reflesh project");
+					reflesh();
+					monitor.worked(4);
+					monitor.done();
+				}
+			});
+		} catch (Exception e) {
 			Activator.showErrorDialog(e);
 		}
 	}
 
-	@Override
-	protected abstract DocbookXsl createXslFile();
-
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 * @see jp.sourceforge.edocbook.ui.popup.actions.AbstractCreateAction#createOutputProperties()
+	 */
 	@Override
 	protected Properties createOutputProperties() {
 		// TODO get output property from anywhere(preference?)

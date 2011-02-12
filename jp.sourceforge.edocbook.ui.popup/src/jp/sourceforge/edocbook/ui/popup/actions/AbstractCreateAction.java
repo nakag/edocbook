@@ -1,7 +1,7 @@
 /*
  * This file is part of Eclipse Docbook Plugin
  * 
- * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ * Copyright (C) 2010-2011 nakaG <nakag@users.sourceforge.jp>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,15 +62,40 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 
 	/** IWorkbenchPart */
 	private IWorkbenchPart part;
+	/** the current selection file */
+	protected IFile currentSelection;
 
+	/**
+	 * create parameteres
+	 * 
+	 * @return the list of param
+	 */
 	protected abstract List<Param> createParameters();
 
+	/**
+	 * create templates
+	 * 
+	 * @return the list of Template
+	 */
 	protected abstract List<Template> createTemlates();
 
+	/**
+	 * create output properties
+	 * 
+	 * @return the properties
+	 */
 	protected abstract Properties createOutputProperties();
 
+	/**
+	 * create xsl file.
+	 * 
+	 * @return the docbook xsl file
+	 */
 	protected abstract DocbookXsl createXslFile();
 
+	/**
+	 * the constructor
+	 */
 	public AbstractCreateAction() {
 		super();
 	}
@@ -87,17 +112,24 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 	}
 
 	/**
-	 * get theselect file
+	 * get the select file
 	 * 
 	 * @return IFile
 	 */
 	protected IFile getSelection() {
+		if (currentSelection != null) {
+			return currentSelection;
+		}
 		ISelectionProvider selectionProvider = part.getSite()
 				.getSelectionProvider();
 		ISelection selection = selectionProvider.getSelection();
+		currentSelection = getSelectionFile(selection);
+		return currentSelection;
+	}
+
+	private IFile getSelectionFile(ISelection selection) {
 		if (selection instanceof StructuredSelection) {
-			StructuredSelection structuredSelection = (StructuredSelection) selectionProvider
-					.getSelection();
+			StructuredSelection structuredSelection = (StructuredSelection) selection;
 			if (!(structuredSelection.getFirstElement() instanceof IResource)) {
 				return null;
 			}
@@ -120,6 +152,7 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 		} else {
 			return null;
 		}
+
 	}
 
 	/**
@@ -129,8 +162,14 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 	 */
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
+		currentSelection = getSelectionFile(selection);
 	}
 
+	/**
+	 * get docbook file.
+	 * 
+	 * @return the docbook file
+	 */
 	protected DocbookFile getSourceFile() {
 		IFile iFile = getSelection();
 		if (iFile != null) {
@@ -138,6 +177,12 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 		}
 		return null;
 	}
+
+	/**
+	 * get project that contain the docbook file
+	 * 
+	 * @return project of the docbook file
+	 */
 	private IProject getProject() {
 		IFile iFile = getSelection();
 		if (iFile == null) {
@@ -149,6 +194,13 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 		}
 		return container.getProject();
 	}
+
+	/**
+	 * get output directory, and create output directory if specify and not
+	 * exists.
+	 * 
+	 * @return the output directory
+	 */
 	protected String getOutputDirectory() {
 		String directory = Activator.getOutputDirectory();
 		if (directory.length() == 0) {
@@ -169,6 +221,10 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 		}
 		return folder.getLocation().toString();
 	}
+
+	/**
+	 * reflesh project that contains the docbook file.
+	 */
 	protected void reflesh() {
 		try {
 			IProject project = getProject();
@@ -179,6 +235,13 @@ public abstract class AbstractCreateAction implements IObjectActionDelegate {
 			Activator.showErrorDialog(e);
 			throw new EDocbookRuntimeException(e);
 		}
+	}
+
+	/**
+	 * @return the part
+	 */
+	protected IWorkbenchPart getPart() {
+		return part;
 	}
 
 }
