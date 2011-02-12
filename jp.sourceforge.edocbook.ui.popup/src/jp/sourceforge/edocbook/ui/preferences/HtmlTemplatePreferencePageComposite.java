@@ -1,7 +1,7 @@
 /*
  * This file is part of Eclipse Docbook Plugin
  * 
- * Copyright (C) 2010 nakaG <nakag@sourceforge.jp>
+ * Copyright (C) 2010-2011 nakaG <nakag@users.sourceforge.jp>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

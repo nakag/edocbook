@@ -2,11 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse Docbook Plugin Popup
 Bundle-SymbolicName: jp.sourceforge.edocbook.ui.popup;singleton:=true
-Bundle-Version: 0.0.3.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: jp.sourceforge.edocbook.ui.popup.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- jp.sourceforge.edocbook.core;bundle-version="0.0.3"
+ jp.sourceforge.edocbook.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: nakag
