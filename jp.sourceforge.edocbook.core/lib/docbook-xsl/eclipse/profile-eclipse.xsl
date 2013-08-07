@@ -6,7 +6,7 @@
 <xsl:import href="../html/chunk.xsl"/>
 
 <!-- ********************************************************************
-     $Id: eclipse.xsl 8400 2009-04-08 07:44:54Z bobstayton $
+     $Id: eclipse.xsl 9149 2011-11-12 00:12:07Z bobstayton $
      ********************************************************************
 
      This file is part of the XSL DocBook Stylesheet distribution.
@@ -31,7 +31,7 @@
   <xsl:choose>
     <xsl:when test="$rootid != ''">
       <xsl:choose>
-        <xsl:when test="count($profiled-nodes//*[@id=$rootid]) = 0">
+        <xsl:when test="count($profiled-nodes//*[@id=$rootid or @xml:id=$rootid]) = 0">
           <xsl:message terminate="yes">
             <xsl:text>ID '</xsl:text>
             <xsl:value-of select="$rootid"/>
@@ -44,7 +44,7 @@
           </xsl:if>
           <xsl:if test="$collect.xref.targets != 'only'">
             <xsl:message>Formatting from <xsl:value-of select="$rootid"/></xsl:message>
-            <xsl:apply-templates select="$profiled-nodes//*[@id=$rootid]" mode="process.root"/>
+            <xsl:apply-templates select="$profiled-nodes//*[@id=$rootid or @xml:id=$rootid]" mode="process.root"/>
             <xsl:call-template name="etoc"/>
             <xsl:call-template name="plugin.xml"/>
 				<xsl:call-template name="helpidx"/>
@@ -72,7 +72,7 @@
   <xsl:call-template name="write.chunk">
     <xsl:with-param name="filename">
       <xsl:if test="$manifest.in.base.dir != 0">
-        <xsl:value-of select="$base.dir"/>
+        <xsl:value-of select="$chunk.base.dir"/>
       </xsl:if>
       <xsl:value-of select="'toc.xml'"/>
     </xsl:with-param>
@@ -87,13 +87,13 @@
           <xsl:variable name="title">
             <xsl:if test="$eclipse.autolabel=1">
               <xsl:variable name="label.markup">
-                <xsl:apply-templates select="$profiled-nodes//*[@id=$rootid]" mode="label.markup"/>
+                <xsl:apply-templates select="$profiled-nodes//*[@id=$rootid or @xml:id=$rootid]" mode="label.markup"/>
               </xsl:variable>
               <xsl:if test="normalize-space($label.markup)">
                 <xsl:value-of select="concat($label.markup,$autotoc.label.separator)"/>
               </xsl:if>
             </xsl:if>
-            <xsl:apply-templates select="$profiled-nodes//*[@id=$rootid]" mode="title.markup"/>
+            <xsl:apply-templates select="$profiled-nodes//*[@id=$rootid or @xml:id=$rootid]" mode="title.markup"/>
           </xsl:variable>
           <xsl:variable name="href">
             <xsl:call-template name="href.target.with.base.dir">
@@ -102,7 +102,7 @@
           </xsl:variable>
           
           <toc label="{normalize-space($title)}" topic="{$href}">
-            <xsl:apply-templates select="$profiled-nodes//*[@id=$rootid]/*" mode="etoc"/>
+            <xsl:apply-templates select="$profiled-nodes//*[@id=$rootid or @xml:id=$rootid]/*" mode="etoc"/>
           </toc>
         </xsl:when>
 
@@ -165,7 +165,7 @@
   <xsl:call-template name="write.chunk">
     <xsl:with-param name="filename">
       <xsl:if test="$manifest.in.base.dir != 0">
-        <xsl:value-of select="$base.dir"/>
+        <xsl:value-of select="$chunk.base.dir"/>
       </xsl:if>
       <xsl:value-of select="'plugin.xml'"/>
     </xsl:with-param>
@@ -192,7 +192,7 @@
 
 <xsl:template name="helpidx">
   <xsl:call-template name="write.chunk.with.doctype">
-    <xsl:with-param name="filename" select="concat($base.dir, 'index.xml')"/>
+    <xsl:with-param name="filename" select="concat($chunk.base.dir, 'index.xml')"/>
     <xsl:with-param name="method" select="'xml'"/>
     <xsl:with-param name="indent" select="'yes'"/>
     <xsl:with-param name="doctype-public" select="''"/>

@@ -4,7 +4,7 @@
                 version='1.0'>
 
 <!-- ********************************************************************
-     $Id: lists.xsl 8761 2010-07-21 18:58:53Z mzjn $
+     $Id: lists.xsl 9668 2012-11-28 00:47:59Z bobstayton $
      ********************************************************************
 
      This file is part of the XSL DocBook Stylesheet distribution.
@@ -136,17 +136,9 @@
       </fo:block>
     </fo:list-item-label>
     <fo:list-item-body start-indent="body-start()">
-      <xsl:choose>
-        <!-- * work around broken passivetex list-item-body rendering -->
-        <xsl:when test="$passivetex.extensions = '1'">
-          <xsl:apply-templates/>
-        </xsl:when>
-        <xsl:otherwise>
-          <fo:block>
-            <xsl:apply-templates/>
-          </fo:block>
-        </xsl:otherwise>
-      </xsl:choose>
+      <fo:block>
+        <xsl:apply-templates/>
+      </fo:block>
     </fo:list-item-body>
   </xsl:variable>
 
@@ -385,15 +377,7 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="@termlength"/>
-            <xsl:choose>
-              <!-- workaround for passivetex lack of support for non-constant expressions -->
-              <xsl:when test="$passivetex.extensions != 0">
-                <xsl:text>em</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:text>em * 0.60</xsl:text>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:text>em * 0.60</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -402,15 +386,7 @@
           <xsl:with-param name="terms" select="varlistentry/term"/>
           <xsl:with-param name="maxlength" select="$variablelist.max.termlength"/>
         </xsl:call-template>
-        <xsl:choose>
-          <!-- workaround for passivetex lack of support for non-constant expressions -->
-          <xsl:when test="$passivetex.extensions != 0">
-            <xsl:text>em</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>em * 0.60</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:text>em * 0.60</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -424,17 +400,9 @@
 
   <xsl:variable name="label-separation">1em</xsl:variable>
   <xsl:variable name="distance-between-starts">
-    <xsl:choose>
-      <!-- workaround for passivetex lack of support for non-constant expressions -->
-      <xsl:when test="$passivetex.extensions != 0">
-        <xsl:value-of select="$termlength"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$termlength"/>
-        <xsl:text>+</xsl:text>
-        <xsl:value-of select="$label-separation"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:value-of select="$termlength"/>
+    <xsl:text>+</xsl:text>
+    <xsl:value-of select="$label-separation"/>
   </xsl:variable>
 
   <xsl:if test="title">
@@ -1195,8 +1163,9 @@
 <xsl:template match="segmentedlist" mode="seglist-table">
   <xsl:apply-templates select="title" mode="list.title.mode" />
   <fo:table table-layout="fixed">
-    <fo:table-column column-number="1" column-width="proportional-column-width(1)"/>
-    <fo:table-column column-number="2" column-width="proportional-column-width(1)"/>
+    <xsl:call-template name="segmentedlist.table.columns">
+      <xsl:with-param name="cols" select="count(segtitle)"/>
+    </xsl:call-template>
     <fo:table-header start-indent="0pt" end-indent="0pt">
       <fo:table-row>
         <xsl:apply-templates select="segtitle" mode="seglist-table"/>
@@ -1206,6 +1175,20 @@
       <xsl:apply-templates select="seglistitem" mode="seglist-table"/>
     </fo:table-body>
   </fo:table>
+</xsl:template>
+
+<xsl:template name="segmentedlist.table.columns">
+  <xsl:param name="cols" select="1"/>
+  <xsl:param name="curcol" select="1"/>
+
+  <fo:table-column column-number="{$curcol}"
+                   column-width="proportional-column-width(1)"/>
+  <xsl:if test="$curcol &lt; $cols">
+    <xsl:call-template name="segmentedlist.table.columns">
+      <xsl:with-param name="cols" select="$cols"/>
+      <xsl:with-param name="curcol" select="$curcol+1"/>
+    </xsl:call-template>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="segtitle" mode="seglist-table">
@@ -1258,14 +1241,10 @@
                    |comment()[not(preceding-sibling::callout)]
                    |processing-instruction()[not(preceding-sibling::callout)]"/>
 
-    <fo:list-block space-before.optimum="1em"
-                   space-before.minimum="0.8em"
-                   space-before.maximum="1.2em"
-                   provisional-distance-between-starts="2.2em"
-                   provisional-label-separation="0.2em">
+    <fo:list-block xsl:use-attribute-sets="calloutlist.properties">
 
       <xsl:if test="$pi-label-width != ''">
-              <xsl:attribute name="provisional-distance-between-starts">
+        <xsl:attribute name="provisional-distance-between-starts">
           <xsl:value-of select="$pi-label-width"/>
         </xsl:attribute>
       </xsl:if>
@@ -1287,7 +1266,7 @@
     <xsl:call-template name="pi.dbfo_keep-together"/>
   </xsl:variable>
 
-  <fo:list-item id="{$id}">
+  <fo:list-item id="{$id}" xsl:use-attribute-sets="callout.properties">
     <xsl:if test="$keep.together != ''">
       <xsl:attribute name="keep-together.within-column"><xsl:value-of
                       select="$keep.together"/></xsl:attribute>
@@ -1341,7 +1320,9 @@
       <xsl:text>: ???</xsl:text>
     </xsl:when>
     <xsl:when test="local-name($target)='co'">
-      <xsl:apply-templates select="$target" mode="callout-bug"/>
+      <fo:basic-link internal-destination="{$arearef}">
+        <xsl:apply-templates select="$target" mode="callout-bug"/>
+      </fo:basic-link>
     </xsl:when>
     <xsl:when test="local-name($target)='areaset'">
       <xsl:call-template name="callout-bug">
