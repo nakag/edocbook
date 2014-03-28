@@ -2,7 +2,7 @@
 <feature
       id="jp.sourceforge.edocbook"
       label="Eclipse Docbook Plugin"
-      version="1.0.0.qualifier"
+      version="1.0.1.qualifier"
       provider-name="nakag"
       plugin="jp.sourceforge.edocbook">
 
