@@ -5,7 +5,7 @@
                 version='1.0'>
 
 <!-- ********************************************************************
-     $Id: labels.xsl 8540 2009-12-02 05:28:09Z bobstayton $
+     $Id: labels.xsl 9706 2013-01-16 18:56:16Z bobstayton $
      ********************************************************************
 
      This file is part of the XSL DocBook Stylesheet distribution.
@@ -378,23 +378,7 @@ element label.</para>
 </xsl:template>
 
 <xsl:template match="bridgehead" mode="label.markup">
-  <!-- FIXME: could we do a better job here? -->
-  <xsl:variable name="contsec"
-                select="(ancestor::section
-                         |ancestor::simplesect
-                         |ancestor::sect1
-                         |ancestor::sect2
-                         |ancestor::sect3
-                         |ancestor::sect4
-                         |ancestor::sect5
-                         |ancestor::refsect1
-                         |ancestor::refsect2
-                         |ancestor::refsect3
-                         |ancestor::chapter
-                         |ancestor::appendix
-                         |ancestor::preface)[last()]"/>
-
-  <xsl:apply-templates select="$contsec" mode="label.markup"/>
+  <!-- bridgeheads are not normally numbered -->
 </xsl:template>
 
 <xsl:template match="refsect1" mode="label.markup">
@@ -500,6 +484,10 @@ element label.</para>
       <xsl:number format="{$format}" count="simplesect"/>
     </xsl:when>
   </xsl:choose>
+</xsl:template>
+
+<xsl:template match="topic" mode="label.markup">
+  <!-- topics are not numbered by default -->
 </xsl:template>
 
 <xsl:template match="qandadiv" mode="label.markup">
@@ -786,11 +774,23 @@ element label.</para>
   <xsl:number value="$item-number" format="{$type}"/>
 </xsl:template>
 
+<xsl:template match="production" mode="label.markup">
+  <xsl:number count="production" level="any"/>
+</xsl:template>
+
 <xsl:template match="abstract" mode="label.markup">
   <!-- nop -->
 </xsl:template>
 
 <xsl:template match="sidebar" mode="label.markup">
+  <!-- nop -->
+</xsl:template>
+
+<xsl:template match="glossdiv|glosslist" mode="label.markup">
+  <!-- nop -->
+</xsl:template>
+
+<xsl:template match="glossentry" mode="label.markup">
   <!-- nop -->
 </xsl:template>
 
@@ -804,6 +804,8 @@ element label.</para>
   </xsl:variable>
 
   <xsl:choose>
+    <!-- bridgeheads are not numbered -->
+    <xsl:when test="$section/self::bridgehead">0</xsl:when>
     <xsl:when test="$level &lt;= $section.autolabel.max.depth">      
       <xsl:value-of select="$section.autolabel"/>
     </xsl:when>

@@ -10,7 +10,7 @@
                 version='1.0'>
 
 <!-- ********************************************************************
-     $Id: inline.xsl 8811 2010-08-09 20:24:45Z mzjn $
+     $Id: inline.xsl 9663 2012-11-06 19:09:16Z bobstayton $
      ********************************************************************
 
      This file is part of the XSL DocBook Stylesheet distribution.
@@ -103,6 +103,7 @@
               <xsl:otherwise>
                 <a>
                   <xsl:apply-templates select="." mode="common.html.attributes"/>
+                  <xsl:call-template name="id.attribute"/>
 
                   <xsl:attribute name="href">
                     <xsl:call-template name="href.target">
@@ -139,6 +140,7 @@
           <xsl:otherwise>
             <a>
               <xsl:apply-templates select="." mode="common.html.attributes"/>
+              <xsl:call-template name="id.attribute"/>
               <xsl:attribute name="href">
                 <xsl:value-of select="$xhref"/>
               </xsl:attribute>
@@ -178,6 +180,7 @@
 
         <a>
           <xsl:apply-templates select="." mode="common.html.attributes"/>
+          <xsl:call-template name="id.attribute"/>
           <xsl:attribute name="href">
             <xsl:call-template name="href.target">
               <xsl:with-param name="object" select="$target"/>
@@ -223,6 +226,7 @@
     <xsl:attribute name="class">
       <xsl:value-of select="local-name(.)"/>
     </xsl:attribute>
+    <xsl:call-template name="id.attribute"/>
     <xsl:call-template name="dir"/>
     <xsl:call-template name="generate.html.title"/>
     <xsl:copy-of select="$content"/>
@@ -241,6 +245,7 @@
   </xsl:param>
   <code>
     <xsl:apply-templates select="." mode="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
     <xsl:call-template name="apply-annotations"/>
   </code>
@@ -258,6 +263,7 @@
 
   <span>
     <xsl:apply-templates select="." mode="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
 
     <!-- don't put <strong> inside figure, example, or table titles -->
     <xsl:choose>
@@ -288,6 +294,7 @@
   </xsl:param>
   <em>
     <xsl:call-template name="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
     <xsl:call-template name="apply-annotations"/>
   </em>
@@ -312,6 +319,7 @@
                          or local-name(../..) = 'formalpara')">
       <code>
         <xsl:call-template name="common.html.attributes"/>
+        <xsl:call-template name="id.attribute"/>
         <xsl:copy-of select="$content"/>
         <xsl:call-template name="apply-annotations"/>
       </code>
@@ -319,6 +327,7 @@
     <xsl:otherwise>
       <strong>
         <xsl:call-template name="common.html.attributes"/>
+        <xsl:call-template name="id.attribute"/>
         <code>
           <xsl:call-template name="generate.html.title"/>
           <xsl:call-template name="dir"/>
@@ -341,6 +350,7 @@
   </xsl:param>
   <em>
     <xsl:call-template name="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <code>
       <xsl:call-template name="generate.html.title"/>
       <xsl:call-template name="dir"/>
@@ -361,6 +371,7 @@
   </xsl:param>
   <sup>
     <xsl:call-template name="generate.html.title"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:call-template name="dir"/>
     <xsl:copy-of select="$content"/>
     <xsl:call-template name="apply-annotations"/>
@@ -378,6 +389,7 @@
   </xsl:param>
   <sub>
     <xsl:call-template name="generate.html.title"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:call-template name="dir"/>
     <xsl:copy-of select="$content"/>
     <xsl:call-template name="apply-annotations"/>
@@ -400,6 +412,7 @@
 
   <span>
     <xsl:call-template name="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
   </span>
 </xsl:template>
@@ -417,6 +430,7 @@
 
   <span>
     <xsl:call-template name="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
   </span>
 </xsl:template>
@@ -434,6 +448,7 @@
 
   <span>
     <xsl:call-template name="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
   </span>
 </xsl:template>
@@ -543,14 +558,14 @@
 
 <xsl:template match="function/parameter" priority="2">
   <xsl:call-template name="inline.italicmonoseq"/>
-  <xsl:if test="following-sibling::*">
+  <xsl:if test="$function.parens != 0 and following-sibling::*">
     <xsl:text>, </xsl:text>
   </xsl:if>
 </xsl:template>
 
 <xsl:template match="function/replaceable" priority="2">
   <xsl:call-template name="inline.italicmonoseq"/>
-  <xsl:if test="following-sibling::*">
+  <xsl:if test="$function.parens != 0 and following-sibling::*">
     <xsl:text>, </xsl:text>
   </xsl:if>
 </xsl:template>
@@ -592,7 +607,21 @@
 </xsl:template>
 
 <xsl:template match="keycap">
-  <xsl:call-template name="inline.boldseq"/>
+  <xsl:choose>
+    <xsl:when test="@function and normalize-space(.) = ''">
+      <xsl:call-template name="inline.boldseq">
+        <xsl:with-param name="content">
+          <xsl:call-template name="gentext.template">
+            <xsl:with-param name="context" select="'keycap'"/>
+            <xsl:with-param name="name" select="@function"/>
+          </xsl:call-template>
+        </xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="inline.boldseq"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="keycode">
@@ -735,6 +764,7 @@
 
 <xsl:template match="emphasis">
   <span>
+    <xsl:call-template name="id.attribute"/>
     <xsl:choose>
       <!-- We don't want empty @class values, so do not propagate empty @roles -->
       <xsl:when test="@role  and
@@ -793,15 +823,21 @@
 
 <xsl:template match="phrase">
   <span>
+    <xsl:call-template name="id.attribute"/>
     <xsl:call-template name="locale.html.attributes"/>
     <!-- We don't want empty @class values, so do not propagate empty @roles -->
-    <xsl:if test="@role and 
-                  normalize-space(@role) != '' and
-                  $phrase.propagates.style != 0">
-      <xsl:apply-templates select="." mode="class.attribute">
-        <xsl:with-param name="class" select="@role"/>
-      </xsl:apply-templates>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@role and 
+                     normalize-space(@role) != '' and
+                     $phrase.propagates.style != 0">
+        <xsl:apply-templates select="." mode="class.attribute">
+          <xsl:with-param name="class" select="@role"/>
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="class.attribute"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:call-template name="dir"/>
     <xsl:call-template name="anchor"/>
     <xsl:call-template name="simple.xlink">
@@ -823,7 +859,6 @@
   </xsl:variable>
   <span>
     <xsl:apply-templates select="." mode="common.html.attributes"/>
-    <xsl:call-template name="anchor"/>
     <xsl:choose>
       <xsl:when test="$depth mod 2 = 0">
         <xsl:call-template name="gentext.startquote"/>
@@ -1168,6 +1203,7 @@
       </xsl:if>
       <a>
         <xsl:apply-templates select="." mode="common.html.attributes"/>
+        <xsl:call-template name="id.attribute"/>
         <xsl:attribute name="href">
           <xsl:text>mailto:</xsl:text>
           <xsl:value-of select="."/>
@@ -1277,6 +1313,7 @@
 
         <xsl:choose>
           <xsl:when test="$bibliography.numbered != 0">
+            <xsl:call-template name="id.attribute"/>
             <xsl:apply-templates select="$target" mode="citation"/>
           </xsl:when>
           <xsl:otherwise>
@@ -1389,6 +1426,7 @@
 
   <span>
     <xsl:apply-templates select="." mode="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
   </span>
 </xsl:template>
@@ -1406,6 +1444,7 @@
 
   <span>
     <xsl:apply-templates select="." mode="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
   </span>
 </xsl:template>
@@ -1425,6 +1464,7 @@
 
   <span>
     <xsl:apply-templates select="." mode="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
   </span>
 </xsl:template>
@@ -1442,6 +1482,7 @@
 
   <span>
     <xsl:apply-templates select="." mode="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
   </span>
 </xsl:template>
@@ -1476,6 +1517,7 @@
 
   <span>
     <xsl:apply-templates select="." mode="common.html.attributes"/>
+    <xsl:call-template name="id.attribute"/>
     <xsl:copy-of select="$content"/>
   </span>
 </xsl:template>
