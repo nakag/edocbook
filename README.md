@@ -7,7 +7,10 @@ Eclipse Docbook Plugin will generates documents of various file formats from doc
 - Java6
 - Eclipse 3.4 and above
 
-## Download binary
+## Build plugin
+Export jp.sourceforge.edocbook.feature as Deployable Features.
+
+## Download plugin
 https://osdn.net/projects/edocbook/releases/
 
 ## Install
@@ -16,4 +19,4 @@ https://osdn.net/projects/edocbook/releases/
 
 ## Usage
 1. Right click a docbook-file.
-2.Select a preferred format from popupmenu->Docbook-> and below.
+2. Select a preferred format from popupmenu->Docbook-> and below.
